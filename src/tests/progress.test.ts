@@ -29,6 +29,27 @@ describe('campaign progress', () => {
     expect(equippedAgain.equippedCosmetics[item.slot]).toBe(item.itemId);
   });
 
+  it('starting a new journey resets progress but keeps comfort settings', () => {
+    const played = {
+      ...createInitialProgress(),
+      characterId: 'heroine' as const,
+      nextBattleOrder: 9,
+      battleBestHalfUnits: { battle_01: 10, battle_02: 8 },
+      totalEarnedHalfUnits: 18,
+      walletHalfUnits: 12,
+      purchasedCosmeticIds: ['head_signal'],
+      settings: { musicEnabled: false, effectsEnabled: false, reducedMotion: true },
+    };
+    const restarted = createInitialProgress(played.settings);
+    expect(restarted.characterId).toBeNull();
+    expect(restarted.nextBattleOrder).toBe(1);
+    expect(restarted.battleBestHalfUnits).toEqual({});
+    expect(restarted.totalEarnedHalfUnits).toBe(0);
+    expect(restarted.walletHalfUnits).toBe(0);
+    expect(restarted.purchasedCosmeticIds).toEqual([]);
+    expect(restarted.settings).toEqual(played.settings);
+  });
+
   it('migrates malformed persisted data into bounded schema v1 state', () => {
     const migrated = migrateProgress({
       schemaVersion: 99,
