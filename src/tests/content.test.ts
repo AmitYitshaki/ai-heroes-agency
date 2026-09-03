@@ -21,4 +21,17 @@ describe('battle registry', () => {
       [7, 1], [13, 2], [18, 3], [22, 4],
     ]);
   });
+
+  it('isolates raw clock times so they cannot visually swap places with the Hebrew label next to them', () => {
+    // battle_20 mixes Hebrew text with "HH:MM" clock times; a plain digit run
+    // embedded in RTL prose can render out of order (confirmed live — the
+    // un-isolated string rendered "AI" and "10:00" swapped on screen).
+    // U+2068/U+2069 (First Strong Isolate / Pop Directional Isolate) around
+    // just the digit run fixes it; wrapping "AI: 10:00" together as one
+    // isolate does NOT — regression-tested against the live-verified fix.
+    const battle20 = battles.find((battle) => battle.battleId === 'battle_20')!;
+    expect(battle20.promptFrame).toContain('⁨10:00⁩');
+    expect(battle20.promptFrame).toContain('⁨08:00⁩');
+    expect(battle20.successMessage).toContain('⁨08:00⁩');
+  });
 });
