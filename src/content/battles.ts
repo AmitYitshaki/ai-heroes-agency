@@ -31,6 +31,14 @@ export const battles: BattleDefinition[] = [
 
 export const battleById = Object.fromEntries(battles.map((battle) => [battle.battleId, battle])) as Record<string, BattleDefinition>;
 
+// Typed distinction between a tutorial/training battle (no antagonist — the
+// child is learning the simulator itself) and a villain battle. Driven by
+// `battle.villain === null`, the same typed field battle content already
+// sets per-battle — never inferred from displayed title/story text.
+export function isTrainingBattle(battle: BattleDefinition): boolean {
+  return battle.villain === null;
+}
+
 export interface SkillCatalogEntry { powerId: string; label: string; battleOrder: number }
 export const skillCatalog: SkillCatalogEntry[] = battles
   .filter((battle): battle is BattleDefinition & { unlockPower: string } => Boolean(battle.unlockPower))

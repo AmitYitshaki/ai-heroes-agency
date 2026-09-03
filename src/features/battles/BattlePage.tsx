@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Bot, Check, ChevronDown, CircleHelp, Lightbulb, Play, ScanLine, ShieldCheck, Sparkles, Target, WandSparkles } from 'lucide-react';
-import { battleById } from '../../content/battles';
+import { battleById, isTrainingBattle } from '../../content/battles';
 import { regionForBattle } from '../../content/regions';
 import { calculateScore, evaluateSelections } from '../../engine/scoring';
 import type { ComponentProvenance } from '../../schemas/game';
@@ -43,7 +43,7 @@ function StandardBattle({ battleId }: { battleId: string }) {
   const region = battle ? regionForBattle(battle.order) : regionForBattle(1);
 
   useEffect(() => { headingRef.current?.focus(); }, [phase]);
-  useEffect(() => { if (battle?.villain) playCue('boss'); }, [battle?.battleId]);
+  useEffect(() => { if (battle && !isTrainingBattle(battle)) playCue('boss'); }, [battle?.battleId]);
   useEffect(() => {
     if (phase !== 'dispatch') return;
     const timer = window.setTimeout(() => runEvaluation(), progress.settings.reducedMotion ? 250 : attempts ? 1200 : 2400);
@@ -63,6 +63,7 @@ function StandardBattle({ battleId }: { battleId: string }) {
   if (battle.order > progress.nextBattleOrder) return <AppShell><section className="screen guard"><ShieldCheck/><h1>המשימה עדיין נעולה</h1><p>השלימו קודם את קרב <Ltr>{battle.order - 1}</Ltr>. שום התקדמות לא השתנתה.</p><Button onClick={() => navigate('/map')}>חזרה למפה</Button></section></AppShell>;
 
   const ordered = battle.order === 14;
+  const training = isTrainingBattle(battle);
   const choose = (id: string) => {
     if (retained.includes(id)) return;
     playCue('select');
@@ -115,8 +116,14 @@ function StandardBattle({ battleId }: { battleId: string }) {
   return <AppShell><article className={`battle battle--${battle.regionId}`} style={{ '--region': region.color, '--region-tint': region.tint } as React.CSSProperties}>
     <header className="battle-bar"><span><Ltr>קרב {battle.order} / 23</Ltr></span><span className="skill-chip"><Target />{battle.skillLabel}</span></header>
     {phase === 'briefing' && <section className="battle-panel intro-panel page-enter">
-      <div className="stage"><CharacterArt id="char_loop_idle" alt="לופּ-X ממתין לפקודה" /><div className="stage__versus">מול</div>{battle.villain && <CharacterArt id={villainArt[battle.regionId]} alt={`${battle.villain} מציג את התקלה`} />}</div>
-      <div><span className="eyebrow">{region.name}</span><h1 ref={headingRef} tabIndex={-1}>{battle.title}</h1><p className="story">{battle.story}</p><div className="objective"><Target/><div><strong>מטרת המשימה</strong><p>{battle.objective}</p></div></div></div>
+      <div className="stage">
+        <CharacterArt id="char_loop_idle" alt="לופּ-X ממתין לפקודה" />
+        <div className="stage__versus">{training ? 'עם' : 'מול'}</div>
+        {training
+          ? <CharacterArt id="char_aleph_neutral" alt="מפקדת אלף מלווה את אימון הסימולטור" />
+          : battle.villain && <CharacterArt id={villainArt[battle.regionId]} alt={`${battle.villain} מציג את התקלה`} />}
+      </div>
+      <div><span className="eyebrow">{training ? <><Play/> אימון סימולטור</> : region.name}</span><h1 ref={headingRef} tabIndex={-1}>{battle.title}</h1><p className="story">{battle.story}</p><div className="objective"><Target/><div><strong>מטרת המשימה</strong><p>{battle.objective}</p></div></div></div>
       <Button onClick={start}>{demoDone ? 'התחילו סריקה' : 'שגרו'}</Button>
     </section>}
     {phase === 'compose' && <section className="battle-panel work-panel page-enter">

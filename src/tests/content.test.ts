@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { battles, validateBattleRegistry } from '../content/battles';
+import { battles, isTrainingBattle, validateBattleRegistry } from '../content/battles';
 
 describe('battle registry', () => {
   it('contains the complete ordered 23-battle campaign', () => {
@@ -33,5 +33,21 @@ describe('battle registry', () => {
     expect(battle20.promptFrame).toContain('⁨10:00⁩');
     expect(battle20.promptFrame).toContain('⁨08:00⁩');
     expect(battle20.successMessage).toContain('⁨08:00⁩');
+  });
+
+  it('flags battle_01 as the sole training battle — every other battle stays a villain battle', () => {
+    // battle_01 is a tutorial simulator with no antagonist (`villain: null`
+    // in battle metadata). BattlePage reads this typed field — not the
+    // displayed title/story text — to decide whether to render the
+    // "versus a villain" stage or the "training with Aleph" stage. This
+    // locks in that exactly one battle is training-mode and that a real
+    // battle (e.g. battle_02) still resolves to villain-mode.
+    const battle01 = battles.find((battle) => battle.battleId === 'battle_01')!;
+    const battle02 = battles.find((battle) => battle.battleId === 'battle_02')!;
+    expect(isTrainingBattle(battle01)).toBe(true);
+    expect(battle01.villain).toBeNull();
+    expect(isTrainingBattle(battle02)).toBe(false);
+    expect(battle02.villain).not.toBeNull();
+    expect(battles.filter(isTrainingBattle).map((battle) => battle.battleId)).toEqual(['battle_01']);
   });
 });
