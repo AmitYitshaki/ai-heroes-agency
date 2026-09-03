@@ -24,9 +24,24 @@ export function CharacterArt({ id, alt, className = '' }: { id: string; alt: str
 
 export function Modal({ title, children, onClose }: { title: string; children: ReactNode; onClose: () => void }) {
   const heading = useRef<HTMLHeadingElement>(null);
-  useEffect(() => { heading.current?.focus(); const key = (event: KeyboardEvent) => event.key === 'Escape' && onClose(); document.addEventListener('keydown', key); return () => document.removeEventListener('keydown', key); }, [onClose]);
+  const modal = useRef<HTMLElement>(null);
+  useEffect(() => {
+    heading.current?.focus();
+    const key = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { onClose(); return; }
+      if (event.key !== 'Tab' || !modal.current) return;
+      const focusable = modal.current.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener('keydown', key);
+    return () => document.removeEventListener('keydown', key);
+  }, [onClose]);
   return <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-    <section className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <section className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" ref={modal}>
       <Button variant="ghost" className="modal__close" aria-label="סגירת חלון" onClick={onClose}><X /></Button>
       <h2 id="modal-title" ref={heading} tabIndex={-1}>{title}</h2>{children}
     </section>

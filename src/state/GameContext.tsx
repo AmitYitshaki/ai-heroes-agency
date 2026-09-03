@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import type { CampaignProgressV1, CharacterId, CosmeticItem, PlayerSettings } from '../schemas/game';
 import { commitBattleBest, createInitialProgress, grantBonus, loadProgress, purchaseCosmetic, saveProgress, selectCharacter } from '../services/progress';
@@ -22,9 +22,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
   const [progress, setProgress] = useState<CampaignProgressV1>(() => loadProgress());
   const [audioUnlocked, setAudioUnlocked] = useState(false);
+  // Mirrors `progress` synchronously so idempotent writers below always read
+  // the latest committed state even when called twice back-to-back in the
+  // same tick (double-click, double-tap) before React re-renders.
+  const progressRef = useRef(progress);
+  progressRef.current = progress;
 
   useEffect(() => {
-    const unlock = () => { audio.unlock(); setAudioUnlocked(true); window.removeEventListener('pointerdown', unlock); window.removeEventListener('keydown', unlock); };
+    const unlock = () => { try { audio.unlock(); } catch { /* audio unsupported or blocked; game continues silently */ } setAudioUnlocked(true); window.removeEventListener('pointerdown', unlock); window.removeEventListener('keydown', unlock); };
     window.addEventListener('pointerdown', unlock, { once: true });
     window.addEventListener('keydown', unlock, { once: true });
     return () => { window.removeEventListener('pointerdown', unlock); window.removeEventListener('keydown', unlock); audio.stopMusic(); };
@@ -35,31 +40,30 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [audioUnlocked, progress.settings.musicEnabled, location.pathname]);
 
   const persist = useCallback((updater: (previous: CampaignProgressV1) => CampaignProgressV1) => {
-    setProgress((previous) => {
-      const next = updater(previous);
-      try { return saveProgress(next); } catch { return next; }
-    });
+    const next = saveProgress(updater(progressRef.current));
+    progressRef.current = next;
+    setProgress(next);
+    return next;
   }, []);
 
   const value = useMemo<GameContextValue>(() => ({
     progress,
     hasJourney: progress.characterId !== null || Object.keys(progress.battleBestHalfUnits).length > 0,
-    setCharacter: (id) => persist((previous) => selectCharacter(previous, id)),
+    setCharacter: (id) => { persist((previous) => selectCharacter(previous, id)); },
     completeBattle: (id, order, score, power) => {
-      const previousBest = progress.battleBestHalfUnits[id] ?? 0;
-      const next = commitBattleBest(progress, id, order, score, power);
-      setProgress(saveProgress(next));
+      const previousBest = progressRef.current.battleBestHalfUnits[id] ?? 0;
+      const next = persist((previous) => commitBattleBest(previous, id, order, score, power));
       return { delta: Math.max(0, next.battleBestHalfUnits[id] - previousBest), best: next.battleBestHalfUnits[id] };
     },
-    completeBonus: (id) => persist((previous) => grantBonus(previous, id)),
+    completeBonus: (id) => { persist((previous) => grantBonus(previous, id)); },
     buyCosmetic: (item) => {
-      if (!progress.purchasedCosmeticIds.includes(item.itemId) && progress.walletHalfUnits < item.priceHalfUnits) return false;
-      setProgress(saveProgress(purchaseCosmetic(progress, item)));
+      if (!progressRef.current.purchasedCosmeticIds.includes(item.itemId) && progressRef.current.walletHalfUnits < item.priceHalfUnits) return false;
+      persist((previous) => purchaseCosmetic(previous, item));
       return true;
     },
-    updateSettings: (settings) => persist((previous) => ({ ...previous, settings: { ...previous.settings, ...settings } })),
-    newJourney: () => setProgress(saveProgress(createInitialProgress(progress.settings))),
-    playCue: (cue) => audio.play(cue, progress.settings.effectsEnabled),
+    updateSettings: (settings) => { persist((previous) => ({ ...previous, settings: { ...previous.settings, ...settings } })); },
+    newJourney: () => { persist((previous) => createInitialProgress(previous.settings)); },
+    playCue: (cue) => audio.play(cue, progressRef.current.settings.effectsEnabled),
   }), [progress, persist]);
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
