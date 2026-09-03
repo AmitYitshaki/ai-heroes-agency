@@ -4,7 +4,7 @@ Last updated: this document was introduced by the commit titled "fix: content-au
 
 ## 1. Product state
 
-**Release-candidate quality.** The full campaign is playable end to end: onboarding → character select → briefing → 23 battles across 4 regions + a tutorial + a finale → 4 workshop visits → 3 optional bonuses → certification ceremony. All 23 battles have been cross-checked against their authoritative specs (`handoff/source/04_BATTLE_CONTENT/battle_01.md`–`battle_23.md`) at least twice across different audit rounds; two content bugs were found and fixed (see §7). Zero known P0s. Two P1s remain, both scoped to things this environment genuinely cannot verify (real screen reader, real device on-screen keyboard) or a license-confirmation step that requires a human, not more engineering.
+**Release-candidate quality.** The full campaign is playable end to end: onboarding → character select → briefing → 23 battles across 4 regions + a tutorial + a finale → 4 workshop visits → 3 optional bonuses → certification ceremony. All 23 battles have been cross-checked against their authoritative specs (`handoff/source/04_BATTLE_CONTENT/battle_01.md`–`battle_23.md`) at least twice across different audit rounds; two content bugs were found and fixed (see §7). Zero known P0s. One P1 remains, scoped to something this environment genuinely cannot verify (real screen reader, real device on-screen keyboard), not more engineering. Audio licensing for every shipped file is now project-owner-confirmed (see §6 and `docs/THIRD_PARTY_ASSETS.md`) — note the confirmed music license is personal/private/non-commercial use only, which matters if this build is ever deployed publicly.
 
 **What's NOT done, by design, per explicit product decisions:** no login/account, no chat, no multiplayer, no public leaderboard, no teacher/parent mode, no real-money purchases, no cloud sync. Do not add any of these without an explicit, new instruction — they were deliberately excluded (`01_PRODUCT_SPEC.md` §"אין להוסיף Login...").
 
@@ -83,9 +83,10 @@ These were made deliberately, in prior rounds, generally after hitting a real pr
 
 **P0: none.**
 
-**P1 (both require something this environment cannot do — not more engineering time):**
-- Audio file licenses are **not confirmed** — every source/license/URL field in `docs/THIRD_PARTY_ASSETS.md` is `REQUIRES_USER_CONFIRMATION`. This blocks public release per `AC-MEDIA-006`. A human needs to check the actual purchase/download record.
+**P1 (requires something this environment cannot do — not more engineering time):**
 - No real assistive-technology pass (VoiceOver/NVDA) or physical/virtual on-screen-keyboard device test has been run — see `docs/RELEASE_TRACEABILITY.md`'s PARTIAL rows (AC-A11Y-004, 006, 009, AC-PERF-001/002). Code-level semantics (headings, `aria-live`, labels, 44px targets) are in place and reviewed, just not verified against real AT hardware/software.
+
+**Resolved this round:** Audio file licenses are now confirmed by the project owner — see `docs/THIRD_PARTY_ASSETS.md`. The 7 music tracks are Suno Free generations by the project owner (personal/private/non-commercial use only — re-confirm before any public deployment); the 5 wired `mixkit-*.wav` SFX files carry the Mixkit Sound Effects Free License (https://mixkit.co/license/). The 2 remaining unconfirmed files are unused and not shipped in `public/audio/`.
 
 **P2 (documented, deliberately not touched — cosmetic or out of this round's scope):**
 - Battle 17's "many changes" distractor conflates two separate failure modes from the spec into one option (softens, doesn't break, the isolation lesson).
