@@ -19,7 +19,7 @@ const outcomes: Record<Battle23OutcomeKey, { title: string; body: string; tip: s
   missing_constraint: { title:'התכנית ארוכה מדי', body:'לופּ לא קיבל מגבלה לכמות הצעדים.', tip:'דרשו בדיוק חמישה שלבים.' },
   missing_format: { title:'כל המידע הגיע כגוש אחד', body:'התוכן קיים, אבל אי אפשר לעקוב אחריו בקלות.', tip:'בקשו רשימה ממוספרת.' },
   missing_success_criteria: { title:'שלב אחד נעלם', body:'לופּ לא התבקש לבדוק שכל השלבים מופיעים.', tip:'בקשו לבדוק שכל חמשת השלבים מופיעים בסדר.' },
-  full_success: { title:'לוח התכנית שוחזר!', body:'חמשת השלבים מופיעים בסדר, בפורמט ברור וללא מידע אישי.', tip:'בדקתם את התוצאה מול המדריך המאושר.' },
+  full_success: { title:'לוח התכנית שוחזר!', body:'חמשת השלבים מופיעים בסדר, בפורמט ברור וללא מידע אישי.', tip:'מטרה, אילוץ, פורמט ובדיקה פעלו יחד: בדקתם את התוצאה מול המדריך המאושר, ולא רק לפי איך שהיא נראתה.' },
 };
 
 // Matches the help-ladder "step 4" mechanic in battle_23.md §ח: once the

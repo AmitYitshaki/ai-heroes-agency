@@ -28,6 +28,8 @@ export interface BattleDefinition {
   correctChoiceIds: string[];
   successMessage: string;
   partialMessage: string;
+  /** 2-4 sentences shown on success: why this choice is correct for this battle, which prompt component it strengthens, and how that helps an AI give an accurate/safe/testable result. Distinct from `concept` (the general principle, shown before the choice via progressive disclosure). */
+  successExplanation: string;
   criteria: [string, string, string, string];
   estimatedSeconds: number;
   unlockPower?: string;

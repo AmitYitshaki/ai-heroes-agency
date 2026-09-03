@@ -70,3 +70,40 @@ describe('battle registry', () => {
     expect(positionCounts[2]).toBeLessThan(trials * 0.6); // no longer "almost always last"
   });
 });
+
+describe('battle content quality (prompt 10/10 content pass)', () => {
+  // Banned generic rejection phrases the content round explicitly rules out —
+  // feedback must judge the prompt, never just reject the child.
+  const genericPhrases = ['לא נכון, נסו שוב', 'טעות, נסו שוב', 'תשובה שגויה', 'תשובה לא נכונה'];
+
+  it('every task intro (story + objective, read together at briefing) fits in four short sentences', () => {
+    battles.forEach((battle) => {
+      const sentenceCount = `${battle.story} ${battle.objective}`.split(/[.!?]+/).filter((part) => part.trim().length > 0).length;
+      expect(sentenceCount, `${battle.battleId} intro has ${sentenceCount} sentences`).toBeLessThanOrEqual(4);
+    });
+  });
+
+  it('every battle has a substantive, specific success explanation — not a generic line, not a duplicate of the general concept', () => {
+    battles.forEach((battle) => {
+      expect(battle.successExplanation.trim().length, battle.battleId).toBeGreaterThan(40);
+      expect(battle.successExplanation).not.toBe(battle.concept);
+      genericPhrases.forEach((phrase) => expect(battle.successExplanation).not.toContain(phrase));
+    });
+  });
+
+  it('wrong-choice feedback is specific to the choice and never a generic rejection', () => {
+    battles.forEach((battle) => {
+      battle.choices
+        .filter((choice) => !battle.correctChoiceIds.includes(choice.id) && choice.outcome)
+        .forEach((choice) => {
+          genericPhrases.forEach((phrase) => expect(choice.outcome, `${battle.battleId}/${choice.id}`).not.toContain(phrase));
+          expect(choice.outcome!.trim().length, `${battle.battleId}/${choice.id}`).toBeGreaterThan(15);
+        });
+    });
+  });
+
+  it('registry validation flags a battle missing its success explanation', () => {
+    const withoutExplanation = battles.map((battle) => ({ ...battle, successExplanation: '' }));
+    expect(validateBattleRegistry(withoutExplanation)).toHaveLength(23);
+  });
+});

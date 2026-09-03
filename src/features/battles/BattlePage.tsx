@@ -197,7 +197,7 @@ export function StandardBattle({ battleId }: { battleId: string }) {
       {!success && <VillainReaction regionId={battle.regionId} pose="reaction" />}
       <div className="world-result"><EquippedLoop poseId={loopPose} alt={success ? 'לופּ-X מציג תוצאה מוצלחת' : 'לופּ-X מציג תוצאה חלקית'} equipped={progress.equippedCosmetics} /><div className="result-symbol" aria-hidden="true">{success ? '✓' : '…'}</div></div>
       <span className="eyebrow">{success ? 'תוצאה מלאה' : 'תוצאה חלקית'}</span><h1 ref={headingRef} tabIndex={-1}>{success ? 'המשימה הצליחה!' : 'לופּ פירש את הבקשה'}</h1><p className="result-copy">{outcome}</p>
-      <div className="causal"><strong>למה זה קרה?</strong><p>{success ? battle.concept : battle.partialMessage}</p></div>
+      <div className="causal"><strong>{success ? 'למה זה עבד?' : 'למה זה קרה?'}</strong><p>{success ? battle.successExplanation : battle.partialMessage}</p></div>
       <Button variant={success ? 'primary' : 'improve'} onClick={() => success ? setPhase('victory') : retry()}>{success ? 'לניצחון' : demoDone ? 'שפרו את הפרומפט' : 'הוסיפו מטרה'}</Button>
     </section>}
     {phase === 'feedback' && <section className="battle-panel guided-panel"><WandSparkles/><h1 ref={headingRef} tabIndex={-1}>משלימים יחד</h1><p>החלקים הנכונים נשמרו. לופּ יסמן את הפתרון כדי שתוכלו להשלים את הקרב.</p><div className="solution-preview">{battle.correctChoiceIds.map((id) => <StatusPill key={id} kind="retained">{battle.choices.find((choice) => choice.id === id)?.label}</StatusPill>)}</div><Button onClick={guided}>השלימו עם לופּ</Button></section>}
