@@ -15,18 +15,20 @@ Last updated: this document was introduced by the commit titled "fix: content-au
 ```text
 src/
   content/      battles.ts (23 battle definitions + skillCatalog), regions.ts, catalog.ts (cosmetics),
-                bonus.ts (bonus topics/questions + anti-repeat picker)
+                bonus.ts (bonus topics/questions + anti-repeat picker), villains.ts (region -> villain
+                character -> pose-kind -> asset id, with the finale villain's non-standard filenames)
   engine/       scoring.ts — pure, deterministic: calculateScore, evaluateSelections, computeFinalBattleProvenance
   services/     progress.ts (localStorage + migration), audio.ts (Howler-backed AudioManager), musicRouting.ts,
                 finalBattle.ts (local safety gate + classifier interface)
   state/        GameContext.tsx — single source of truth, ref-backed to avoid double-award races
   features/     one folder per screen/flow (battles, map, workshop, bonus, onboarding, settings, finale)
-  components/   ui.tsx (Button, Modal, Stars, AppShell, briefcase panel, etc.), ErrorBoundary.tsx, BonusWheel.tsx
+  components/   ui.tsx (Button, Modal, Stars, AppShell, briefcase panel, etc.), ErrorBoundary.tsx,
+                BonusWheel.tsx, VillainReaction.tsx (small in-battle villain cameo)
   utils/        shuffle.ts (Fisher-Yates + seeded RNG), wheelGeometry.ts (bonus wheel angle math)
   schemas/      game.ts — CampaignProgressV1 and all shared types
-  tests/        14 files, 100 tests — content, scoring, progress/persistence, finalBattle safety, battleFlow
+  tests/        16 files, 110 tests — content, scoring, progress/persistence, finalBattle safety, battleFlow
                 (all 23), audio, UI keyboard behavior, ErrorBoundary recovery, battle-option shuffle, bonus
-                wheel geometry/anti-repeat, onboarding routing
+                wheel geometry/anti-repeat, onboarding routing, villain pose mapping/fallback
 ```
 
 - **React + TypeScript + Vite SPA.** `HashRouter` (not `BrowserRouter`) — deliberate, so refresh survives on any static host without server-side rewrite rules. Don't switch back without first confirming the actual Base44 hosting target has SPA-fallback configured and testing a real refresh.
@@ -56,7 +58,7 @@ Plus this round's closing commit, titled "fix: content-audit RTL and terminology
 ```bash
 npm ci               # clean, lockfile-reproducible install
 npm run typecheck    # tsc -b --pretty false
-npm test             # vitest run — 14 files, 100 tests
+npm test             # vitest run — 16 files, 110 tests
 npm run build        # tsc -b && vite build
 npm run dev           # local dev server, http://127.0.0.1:5173 (or next free port)
 npm run preview       # serve the production dist build for smoke testing
@@ -86,6 +88,8 @@ These were made deliberately, in prior rounds, generally after hitting a real pr
 9. **`incoming/audio/` is tracked in git** (26MB, unlike the 91MB duplicate PNGs that were deliberately excluded) — it's the source-of-truth for `npm run audio:optimize`, not dead weight. Don't delete it.
 10. **`/bonus/:bonusId` renders through a small `BonusRoute` wrapper in `App.tsx` that sets `key={bonusId}`** — react-router-dom does not remount an element just because a route param changed within the same matched `Route`, but `BonusPage` reads its persisted wheel selection with a plain `useState` initializer that must re-run per visit. Don't drop the `key`; don't rely on "navigation always goes through /map between visits" as the safety net instead.
 11. **`RecruitPage`'s onboarding briefing doubles as a review screen** via `navigate('/recruit', { state: { briefingOnly: true } })` (wired from Settings' "מה זה פרומפט?" button) — this skips character re-selection and, on the last panel, calls `navigate(-1)` instead of routing into `battle_01`. Don't remove the `reviewOnly` branch or a returning player revisiting the explanation will get shoved into a fresh battle.
+12. **`scripts/optimize-assets.mjs`'s checkerboard removal has a second pass, not just the border flood fill** — the flood fill alone cannot clear a checker pocket fully enclosed by the character's own line art (e.g. under a raised arm); several already-shipped villain poses (`char_tangle_idle` among them — already in production use before this was found) had visible checkerboard remnants there. The second pass clears a still-opaque, checker-toned pixel only when a window around it (sized to the image's own detected checker-cell period) shows a strong, roughly-balanced mix of both checker tones — a real alternating pattern — as opposed to a solid fill (an off-white sleeve, gray glasses, a metal prosthetic), which is why it's safe against character art that happens to be light/gray. Don't revert to the single-pass version; re-run `npm run assets:optimize` if any character asset ever needs reprocessing.
+13. **`villains.ts` is the single source of truth for which villain, and which pose file, a region shows** — `BattlePage`/`FinalBattlePage` never hardcode a `char_<name>_<pose>` id themselves (except the training battle's Aleph cameo, which isn't a villain). The finale villain's pose files are named differently from the other four (`defeat` not `defeat_exit`, `unverified_offer` not `action`) — that's handled entirely inside `villainPoseAssetId`'s override table; don't special-case it again at a call site.
 
 ## 6. Open gaps
 

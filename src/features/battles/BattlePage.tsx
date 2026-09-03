@@ -3,15 +3,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Bot, Check, ChevronDown, CircleHelp, Lightbulb, Play, ScanLine, ShieldCheck, Sparkles, Target, WandSparkles } from 'lucide-react';
 import { battleById, isTrainingBattle } from '../../content/battles';
 import { regionForBattle } from '../../content/regions';
+import { villainPoseAssetId } from '../../content/villains';
 import { calculateScore, evaluateSelections } from '../../engine/scoring';
 import type { ComponentProvenance } from '../../schemas/game';
 import { AppShell, Button, CharacterArt, Ltr, Stars, StatusPill } from '../../components/ui';
+import { VillainReaction } from '../../components/VillainReaction';
 import { useGame } from '../../state/GameContext';
 import { shuffle } from '../../utils/shuffle';
 import { FinalBattlePage } from './FinalBattlePage';
 
 type Phase = 'briefing' | 'compose' | 'dispatch' | 'outcome' | 'feedback' | 'victory' | 'score';
-const villainArt: Record<string, string> = { 'fog_district':'char_bearach_idle', 'no_limits_factory':'char_odveod_idle', 'command_maze':'char_tangle_idle', 'certainty_tower':'char_certainty_idle', 'finale':'char_mashbesh_idle' };
 const helpMessages = [
   'הפרומפט עוד לא מספיק מדויק — נסו לשפר אותו.',
   'בדקו איזה רכיב עדיין לא מתאים למטרה.',
@@ -136,13 +137,13 @@ export function StandardBattle({ battleId }: { battleId: string }) {
         <div className="stage__versus">{training ? 'עם' : 'מול'}</div>
         {training
           ? <CharacterArt id="char_aleph_neutral" alt="מפקדת אלף מלווה את אימון הסימולטור" />
-          : battle.villain && <CharacterArt id={villainArt[battle.regionId]} alt={`${battle.villain} מציג את התקלה`} />}
+          : battle.villain && <CharacterArt id={villainPoseAssetId(battle.regionId, 'briefing')!} alt={`${battle.villain} מציג את התקלה`} />}
       </div>
       <div><span className="eyebrow">{training ? <><Play/> אימון סימולטור</> : region.name}</span><h1 ref={headingRef} tabIndex={-1}>{battle.title}</h1><p className="story">{battle.story}</p><div className="objective"><Target/><div><strong>מטרת המשימה</strong><p>{battle.objective}</p></div></div></div>
       <Button onClick={start}>{demoDone ? 'התחילו סריקה' : 'שגרו'}</Button>
     </section>}
     {phase === 'compose' && <section className="battle-panel work-panel page-enter">
-      <header><span className="eyebrow"><ScanLine /> {templateLabel(battle.battleType)}</span><h1 ref={headingRef} tabIndex={-1}>{battle.instruction}</h1></header>
+      <header><VillainReaction regionId={battle.regionId} pose="watching" /><div className="work-header__text"><span className="eyebrow"><ScanLine /> {templateLabel(battle.battleType)}</span><h1 ref={headingRef} tabIndex={-1}>{battle.instruction}</h1></div></header>
       {battle.promptFrame && <div className="prompt-frame"><Bot/><span>{battle.promptFrame}</span></div>}
       <details className="concept"><summary><CircleHelp /> מה זה אומר?</summary><p>{battle.concept}</p></details>
       {retained.length > 0 && <div className="retained-list" aria-label="רכיבים נכונים שנשמרו">{retained.map((id) => <StatusPill key={id} kind="retained">{battle.choices.find((choice) => choice.id === id)?.label}</StatusPill>)}</div>}
@@ -159,13 +160,14 @@ export function StandardBattle({ battleId }: { battleId: string }) {
     </section>}
     {phase === 'dispatch' && <section className="battle-panel dispatch-panel" aria-busy="true"><h1 ref={headingRef} tabIndex={-1}>משגר ללופּ…</h1><CharacterArt id="char_loop_launch" alt="לופּ-X משגר את הפרומפט" /><div className="dispatch-progress"><span /></div><p>לופּ מבצע בדיוק את הפרומפט שבניתם.</p></section>}
     {phase === 'outcome' && <section className={`battle-panel outcome-panel ${success ? 'success' : 'partial'}`} aria-live="polite">
+      {!success && <VillainReaction regionId={battle.regionId} pose="reaction" />}
       <div className="world-result"><CharacterArt id={loopPose} alt={success ? 'לופּ-X מציג תוצאה מוצלחת' : 'לופּ-X מציג תוצאה חלקית'} /><div className="result-symbol" aria-hidden="true">{success ? '✓' : '…'}</div></div>
       <span className="eyebrow">{success ? 'תוצאה מלאה' : 'תוצאה חלקית'}</span><h1 ref={headingRef} tabIndex={-1}>{success ? 'המשימה הצליחה!' : 'לופּ פירש את הבקשה'}</h1><p className="result-copy">{outcome}</p>
       <div className="causal"><strong>למה זה קרה?</strong><p>{success ? battle.concept : battle.partialMessage}</p></div>
       <Button variant={success ? 'primary' : 'improve'} onClick={() => success ? setPhase('victory') : retry()}>{success ? 'לניצחון' : demoDone ? 'שפרו את הפרומפט' : 'הוסיפו מטרה'}</Button>
     </section>}
     {phase === 'feedback' && <section className="battle-panel guided-panel"><WandSparkles/><h1 ref={headingRef} tabIndex={-1}>משלימים יחד</h1><p>החלקים הנכונים נשמרו. לופּ יסמן את הפתרון כדי שתוכלו להשלים את הקרב.</p><div className="solution-preview">{battle.correctChoiceIds.map((id) => <StatusPill key={id} kind="retained">{battle.choices.find((choice) => choice.id === id)?.label}</StatusPill>)}</div><Button onClick={guided}>השלימו עם לופּ</Button></section>}
-    {phase === 'victory' && <section className="battle-panel victory-panel"><CharacterArt id="char_loop_victory" alt="לופּ-X חוגג את הצלחת המשימה" /><Sparkles/><h1 ref={headingRef} tabIndex={-1}>חותמת משימה!</h1><p>{battle.successMessage}</p><blockquote>{battle.concept}</blockquote><Button onClick={goToScore}>חשבו כוכבים</Button></section>}
+    {phase === 'victory' && <section className="battle-panel victory-panel"><VillainReaction regionId={battle.regionId} pose="defeated" /><CharacterArt id="char_loop_victory" alt="לופּ-X חוגג את הצלחת המשימה" /><Sparkles/><h1 ref={headingRef} tabIndex={-1}>חותמת משימה!</h1><p>{battle.successMessage}</p><blockquote>{battle.concept}</blockquote><Button onClick={goToScore}>חשבו כוכבים</Button></section>}
     {phase === 'score' && scoreData && <section className="battle-panel score-panel"><span className="mission-stamp"><Check/> המשימה הושלמה</span><h1 ref={headingRef} tabIndex={-1}>{scoreData.delta > 0 ? 'שיא חדש!' : 'אימון מצוין'}</h1><Stars halfUnits={scoreData.score}/><div className="criteria-list">{battle.criteria.map((criterion) => <div key={criterion}><Check/><span>{criterion}</span><strong>{aid === 'user_independent' ? '1' : aid === 'user_choice_two' ? '0.5' : 'מודרך'}</strong></div>)}</div><p className="delta">{scoreData.delta > 0 ? <>נוספו לארנק <strong><Ltr>+{scoreData.delta / 2}</Ltr> כוכבים</strong></> : <>השיא נשאר <strong><Ltr>{scoreData.best / 2} / 5</Ltr></strong></>}</p><Button onClick={next}>{battle.workshopVisit ? 'לסדנה' : 'התקדמו למפה'}</Button></section>}
   </article></AppShell>;
 }
