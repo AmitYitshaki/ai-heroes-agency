@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { cosmetics } from '../content/catalog';
-import { commitBattleBest, createInitialProgress, grantBonus, migrateProgress, purchaseCosmetic } from '../services/progress';
+import { commitBattleBest, createInitialProgress, grantBonus, loadProgress, migrateProgress, purchaseCosmetic, saveProgress } from '../services/progress';
 
 describe('campaign progress', () => {
   it('awards only the positive best-score delta on replay', () => {
@@ -48,6 +48,19 @@ describe('campaign progress', () => {
     expect(restarted.walletHalfUnits).toBe(0);
     expect(restarted.purchasedCosmeticIds).toEqual([]);
     expect(restarted.settings).toEqual(played.settings);
+  });
+
+  it('keeps the in-memory session alive when the storage write fails (quota/private mode/disabled)', () => {
+    const failingStorage = { setItem: vi.fn(() => { throw new DOMException('quota exceeded', 'QuotaExceededError'); }) };
+    expect(() => saveProgress(createInitialProgress(), failingStorage)).not.toThrow();
+    const saved = saveProgress({ ...createInitialProgress(), walletHalfUnits: 4 }, failingStorage);
+    expect(saved.walletHalfUnits).toBe(4);
+  });
+
+  it('falls back to a fresh campaign when persisted data is corrupt JSON or storage throws on read', () => {
+    expect(loadProgress({ getItem: () => '{not json' }).schemaVersion).toBe(1);
+    expect(loadProgress({ getItem: () => { throw new Error('storage disabled'); } }).nextBattleOrder).toBe(1);
+    expect(loadProgress({ getItem: () => null }).battleBestHalfUnits).toEqual({});
   });
 
   it('migrates malformed persisted data into bounded schema v1 state', () => {

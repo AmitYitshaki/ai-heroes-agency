@@ -58,7 +58,10 @@ export function loadProgress(storage: Pick<Storage, 'getItem'> = localStorage): 
 
 export function saveProgress(progress: CampaignProgressV1, storage: Pick<Storage, 'setItem'> = localStorage): CampaignProgressV1 {
   const saved = { ...progress, updatedAt: new Date().toISOString() };
-  storage.setItem(STORAGE_KEY, JSON.stringify(saved));
+  // A full quota, private-mode restrictions, or storage being disabled must
+  // not block the current session's in-memory progress — only cross-session
+  // persistence is lost, and the game keeps working until the next reload.
+  try { storage.setItem(STORAGE_KEY, JSON.stringify(saved)); } catch { /* storage unavailable; continue in-memory */ }
   return saved;
 }
 
