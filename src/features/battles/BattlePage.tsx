@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Bot, Check, ChevronDown, CircleHelp, Lightbulb, Play, ScanLine, ShieldCheck, Sparkles, Target, WandSparkles } from 'lucide-react';
+import { Bot, Check, ChevronDown, CircleHelp, Lightbulb, Play, RotateCcw, ScanLine, ShieldCheck, Sparkles, Target, Undo2, WandSparkles, X } from 'lucide-react';
 import { battleById, isTrainingBattle } from '../../content/battles';
 import { regionForBattle } from '../../content/regions';
 import { villainPoseAssetId } from '../../content/villains';
@@ -103,8 +103,18 @@ export function StandardBattle({ battleId }: { battleId: string }) {
       setSuccess(true); setOutcome(battle.successMessage); playCue('success');
     } else {
       const wrong = battle.choices.find((choice) => selected.includes(choice.id) && !battle.correctChoiceIds.includes(choice.id));
-      const correctPicked = selected.filter((id) => battle.correctChoiceIds.includes(id));
-      setRetained((current) => [...new Set([...current, ...correctPicked])]);
+      // For an ordered battle, "picked the right component" doesn't mean
+      // "correct" — it might be in the wrong position, which is exactly the
+      // mistake being made. Locking it in (as the non-ordered battles below
+      // deliberately do, to preserve real progress across attempts) would
+      // permanently disable every card whenever all the right components
+      // were chosen in the wrong sequence, leaving no way to ever reorder
+      // them — the stuck state fixed here. Ordered battles simply never
+      // retain/lock anything; every attempt stays fully editable.
+      if (!ordered) {
+        const correctPicked = selected.filter((id) => battle.correctChoiceIds.includes(id));
+        setRetained((current) => [...new Set([...current, ...correctPicked])]);
+      }
       setSuccess(false); setOutcome(wrong?.outcome ?? battle.partialMessage); playCue('feedback');
       setAttempts((value) => value + 1);
     }
@@ -113,11 +123,19 @@ export function StandardBattle({ battleId }: { battleId: string }) {
 
   const retry = () => {
     if (!demoDone) { setDemoDone(true); setPhase('compose'); return; }
-    setSelected(retained);
+    // Ordered battles keep the child's last (wrong-order) attempt on screen
+    // instead of resetting it, so "undo last step" / removing one card has
+    // something to act on immediately — they fix the order, not rebuild it
+    // from nothing. Every other battle type is unchanged: resume from
+    // whatever was locked in.
+    if (!ordered) setSelected(retained);
     if (attempts >= 6) setAid('system_completed');
     else if (attempts >= 4) setAid('user_choice_two');
     setPhase(attempts >= 6 ? 'feedback' : 'compose');
   };
+
+  const undoLastStep = () => { playCue('select'); setSelected((current) => current.slice(0, -1)); };
+  const restartOrder = () => { playCue('select'); setSelected([]); };
 
   const guided = () => { setAid('system_completed'); setSelected([...battle.correctChoiceIds]); setPhase('dispatch'); };
   const goToScore = () => {
@@ -147,6 +165,21 @@ export function StandardBattle({ battleId }: { battleId: string }) {
       {battle.promptFrame && <div className="prompt-frame"><Bot/><span>{battle.promptFrame}</span></div>}
       <details className="concept"><summary><CircleHelp /> מה זה אומר?</summary><p>{battle.concept}</p></details>
       {retained.length > 0 && <div className="retained-list" aria-label="רכיבים נכונים שנשמרו">{retained.map((id) => <StatusPill key={id} kind="retained">{battle.choices.find((choice) => choice.id === id)?.label}</StatusPill>)}</div>}
+      {ordered && <div className="order-sequence" aria-live="polite">
+        <span className="order-sequence__label">{selected.length > 0 ? 'הסדר שבניתם עד כה — לחצו על שלב כדי להסיר אותו' : 'עדיין לא בחרתם שלבים. בחרו מהרשימה למטה.'}</span>
+        {selected.length > 0 && <ol className="order-sequence__list">
+          {selected.map((id, index) => {
+            const choice = battle.choices.find((candidate) => candidate.id === id);
+            return <li key={id}><button type="button" className="order-sequence__step" onClick={() => choose(id)} aria-label={`הסירו שלב ${index + 1}: ${choice?.label}`}>
+              <span className="order-sequence__step-number"><Ltr>{index + 1}</Ltr></span><span>{choice?.label}</span><X aria-hidden="true" />
+            </button></li>;
+          })}
+        </ol>}
+        <div className="order-sequence__actions">
+          <Button variant="secondary" onClick={undoLastStep} disabled={selected.length === 0}><Undo2/> בטלו צעד</Button>
+          <Button variant="ghost" onClick={restartOrder} disabled={selected.length === 0}><RotateCcw/> התחילו מחדש</Button>
+        </div>
+      </div>}
       <div className={`choice-grid choice-grid--${battle.battleType}`} role={battle.correctChoiceIds.length === 1 ? 'radiogroup' : 'group'} aria-label="אפשרויות לפרומפט">
         {visibleChoices.map((choice, index) => {
           const picked = selected.includes(choice.id), kept = retained.includes(choice.id);
