@@ -14,9 +14,3 @@ export const cosmetics: CosmeticItem[] = [
   { itemId: 'emblem_shield', visitId: 4, slot: 'emblem', label: 'סמל מגן', description: 'הילה ירוקה בטוחה', priceHalfUnits: 16, swatch: '#0F8A5F' },
   { itemId: 'emblem_hero', visitId: 4, slot: 'emblem', label: 'סמל גיבור', description: 'גלימת אור כחולה', priceHalfUnits: 24, swatch: '#1E4FD8' },
 ];
-
-export const bonusQuestions = [
-  { id: 'bonus_1', title: 'בונוס הסתברות', question: 'אותו פרומפט יצר שתי תשובות שונות. מה נכון לעשות?', options: ['לבדוק כל תשובה מול הקריטריון', 'לבחור תמיד בראשונה', 'להניח שהארוכה נכונה'], correct: 0 },
-  { id: 'bonus_2', title: 'בונוס אמת או בדיה', question: 'תשובה נשמעת בטוחה. מה הופך אותה לאמינה?', options: ['השוואה למקור מתאים', 'כותרת גדולה', 'הרבה סימני קריאה'], correct: 0 },
-  { id: 'bonus_3', title: 'בונוס פרטיות', question: 'איזה פרט לא שולחים אם הוא לא נחוץ למשימה?', options: ['מספר טלפון אישי', 'פורמט רשימה', 'אורך שלושה משפטים'], correct: 0 },
-];
