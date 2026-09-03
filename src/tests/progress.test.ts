@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { cosmetics } from '../content/catalog';
-import { commitBattleBest, createInitialProgress, grantBonus, loadProgress, migrateProgress, purchaseCosmetic, saveProgress } from '../services/progress';
+import { commitBattleBest, createInitialProgress, grantBonus, loadProgress, migrateProgress, purchaseCosmetic, recordBonusSelection, saveProgress } from '../services/progress';
 
 describe('campaign progress', () => {
   it('awards only the positive best-score delta on replay', () => {
@@ -29,7 +29,7 @@ describe('campaign progress', () => {
     expect(equippedAgain.equippedCosmetics[item.slot]).toBe(item.itemId);
   });
 
-  it('starting a new journey resets progress but keeps comfort settings', () => {
+  it('starting a new journey resets progress (including bonus history) but keeps comfort settings', () => {
     const played = {
       ...createInitialProgress(),
       characterId: 'heroine' as const,
@@ -38,6 +38,8 @@ describe('campaign progress', () => {
       totalEarnedHalfUnits: 18,
       walletHalfUnits: 12,
       purchasedCosmeticIds: ['head_signal'],
+      completedBonusIds: ['bonus_1'],
+      bonusSelections: { bonus_1: { topicId: 'probability', questionId: 'probability_1' } },
       settings: { musicEnabled: false, effectsEnabled: false, reducedMotion: true },
     };
     const restarted = createInitialProgress(played.settings);
@@ -47,7 +49,28 @@ describe('campaign progress', () => {
     expect(restarted.totalEarnedHalfUnits).toBe(0);
     expect(restarted.walletHalfUnits).toBe(0);
     expect(restarted.purchasedCosmeticIds).toEqual([]);
-    expect(restarted.settings).toEqual(played.settings);
+    expect(restarted.completedBonusIds).toEqual([]);
+    expect(restarted.bonusSelections).toEqual({}); // bonus history reset...
+    expect(restarted.settings).toEqual(played.settings); // ...but comfort/audio settings are not
+  });
+
+  it('records a bonus visit\'s wheel result once and ignores any later attempt to overwrite it — refresh-safe, no re-draw', () => {
+    const initial = createInitialProgress();
+    const first = recordBonusSelection(initial, 'bonus_1', { topicId: 'probability', questionId: 'probability_1' });
+    expect(first.bonusSelections.bonus_1).toEqual({ topicId: 'probability', questionId: 'probability_1' });
+
+    // A second call for the same visit — as a refreshed page re-deriving the
+    // same draw would trigger — must not replace the recorded selection.
+    const second = recordBonusSelection(first, 'bonus_1', { topicId: 'truth', questionId: 'truth_1' });
+    expect(second).toBe(first); // unchanged object — proves the no-op path, not just an equal-looking value
+    expect(second.bonusSelections.bonus_1).toEqual({ topicId: 'probability', questionId: 'probability_1' });
+
+    // A different visit gets its own independent slot.
+    const third = recordBonusSelection(second, 'bonus_2', { topicId: 'truth', questionId: 'truth_1' });
+    expect(third.bonusSelections).toEqual({
+      bonus_1: { topicId: 'probability', questionId: 'probability_1' },
+      bonus_2: { topicId: 'truth', questionId: 'truth_1' },
+    });
   });
 
   it('keeps the in-memory session alive when the storage write fails (quota/private mode/disabled)', () => {
@@ -78,5 +101,23 @@ describe('campaign progress', () => {
     expect(migrated.battleBestHalfUnits).toEqual({ battle_01: 2, battle_02: 7 });
     expect(migrated.walletHalfUnits).toBe(0);
     expect(migrated.completedBonusIds).toEqual(['bonus_1']);
+  });
+
+  it('migrates an old save with no bonusSelections field at all into a safe empty map', () => {
+    // A save written before this field existed.
+    const migrated = migrateProgress({ schemaVersion: 1, characterId: 'hero', nextBattleOrder: 8, completedBonusIds: ['bonus_1'] });
+    expect(migrated.bonusSelections).toEqual({});
+  });
+
+  it('migrates a persisted bonusSelections map, dropping any malformed entries', () => {
+    const migrated = migrateProgress({
+      schemaVersion: 1,
+      bonusSelections: {
+        bonus_1: { topicId: 'probability', questionId: 'probability_1' },
+        bonus_2: { topicId: 'truth' }, // missing questionId — malformed, must be dropped
+        bonus_3: 'not-an-object', // malformed, must be dropped
+      },
+    });
+    expect(migrated.bonusSelections).toEqual({ bonus_1: { topicId: 'probability', questionId: 'probability_1' } });
   });
 });

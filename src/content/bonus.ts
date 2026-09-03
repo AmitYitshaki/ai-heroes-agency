@@ -1,3 +1,6 @@
+import type { BonusSelection } from '../schemas/game';
+import type { RandomSource } from '../utils/shuffle';
+
 export interface BonusQuestion {
   id: string;
   question: string;
@@ -52,4 +55,41 @@ export function validateBonusRegistry(topics = bonusTopics): string[] {
   const allQuestionIds = topics.flatMap((topic) => topic.questions.map((question) => question.id));
   if (new Set(allQuestionIds).size !== allQuestionIds.length) errors.push('מזהה שאלת בונוס כפול');
   return errors;
+}
+
+/**
+ * The pool the wheel is built from *before* a spin: topics not yet used
+ * this journey. If every topic has already been used at least once (more
+ * bonus visits than topics — not the case today, but supported), the full
+ * topic list becomes available again rather than leaving the wheel empty.
+ * The wheel's rendered segments and `chooseBonusSelection` below must
+ * always be built from this exact same function so the needle can only
+ * ever land on a topic that was actually offered.
+ */
+export function availableTopicsForSpin(topics: BonusTopic[], usedTopicIds: string[]): BonusTopic[] {
+  const fresh = topics.filter((topic) => !usedTopicIds.includes(topic.id));
+  return fresh.length > 0 ? fresh : topics;
+}
+
+/**
+ * Picks the topic+question a spin lands on, scoped to `availableTopicsForSpin`
+ * so the wheel and the picker never disagree. Within that pool, a question
+ * never seen yet this journey (`usedQuestionIds`) is always preferred —
+ * across every topic in the pool, not just the chosen one — so no question
+ * repeats before every question in the pool has been shown at least once.
+ * Once that pool itself is exhausted, every (topic, question) pair in it
+ * becomes eligible again rather than throwing or returning nothing.
+ */
+export function chooseBonusSelection(
+  topics: BonusTopic[],
+  usedTopicIds: string[],
+  usedQuestionIds: string[],
+  random: RandomSource = Math.random,
+): BonusSelection {
+  const pool = availableTopicsForSpin(topics, usedTopicIds);
+  const candidates = pool.flatMap((topic) => topic.questions.map((question) => ({ topic, question })));
+  const fresh = candidates.filter(({ question }) => !usedQuestionIds.includes(question.id));
+  const finalPool = fresh.length > 0 ? fresh : candidates;
+  const chosen = finalPool[Math.floor(random() * finalPool.length)];
+  return { topicId: chosen.topic.id, questionId: chosen.question.id };
 }

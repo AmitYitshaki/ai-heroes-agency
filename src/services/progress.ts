@@ -1,4 +1,4 @@
-import type { CampaignProgressV1, CharacterId, CosmeticItem, PlayerSettings } from '../schemas/game';
+import type { BonusSelection, CampaignProgressV1, CharacterId, CosmeticItem, PlayerSettings } from '../schemas/game';
 
 export const STORAGE_KEY = 'ai_heroes_progress_v1';
 
@@ -20,11 +20,20 @@ export const createInitialProgress = (settings = defaultSettings()): CampaignPro
   equippedCosmetics: { head: null, armor: null, movement: null, emblem: null },
   unlockedPowerIds: [],
   appliedTransactionIds: [],
+  bonusSelections: {},
   settings,
   updatedAt: new Date(0).toISOString(),
 });
 
 const clampScore = (value: unknown) => typeof value === 'number' && Number.isInteger(value) && value >= 2 && value <= 10 ? value : 2;
+
+const isBonusSelection = (value: unknown): value is BonusSelection =>
+  typeof value === 'object' && value !== null && typeof (value as Partial<BonusSelection>).topicId === 'string' && typeof (value as Partial<BonusSelection>).questionId === 'string';
+
+const migrateBonusSelections = (value: unknown): Record<string, BonusSelection> => {
+  if (!value || typeof value !== 'object') return {};
+  return Object.fromEntries(Object.entries(value as Record<string, unknown>).filter(([, selection]) => isBonusSelection(selection)) as Array<[string, BonusSelection]>);
+};
 
 export function migrateProgress(raw: unknown): CampaignProgressV1 {
   if (!raw || typeof raw !== 'object') return createInitialProgress();
@@ -43,6 +52,7 @@ export function migrateProgress(raw: unknown): CampaignProgressV1 {
     equippedCosmetics: { ...initial.equippedCosmetics, ...(value.equippedCosmetics ?? {}) },
     unlockedPowerIds: Array.isArray(value.unlockedPowerIds) ? value.unlockedPowerIds.filter((id): id is string => typeof id === 'string') : [],
     appliedTransactionIds: Array.isArray(value.appliedTransactionIds) ? value.appliedTransactionIds.filter((id): id is string => typeof id === 'string') : [],
+    bonusSelections: migrateBonusSelections(value.bonusSelections),
     updatedAt: typeof value.updatedAt === 'string' ? value.updatedAt : initial.updatedAt,
   };
 }
@@ -85,6 +95,17 @@ export function commitBattleBest(progress: CampaignProgressV1, battleId: string,
     unlockedPowerIds: unlockPower && !progress.unlockedPowerIds.includes(unlockPower) ? [...progress.unlockedPowerIds, unlockPower] : progress.unlockedPowerIds,
     appliedTransactionIds: [...progress.appliedTransactionIds, tx],
   };
+}
+
+/**
+ * Idempotent: if `visitBonusId` already has a recorded selection, returns
+ * `progress` unchanged (same object reference) instead of overwriting it —
+ * this is what makes a refresh after spinning return to the same topic and
+ * question rather than drawing again.
+ */
+export function recordBonusSelection(progress: CampaignProgressV1, visitBonusId: string, selection: BonusSelection): CampaignProgressV1 {
+  if (progress.bonusSelections[visitBonusId]) return progress;
+  return { ...progress, bonusSelections: { ...progress.bonusSelections, [visitBonusId]: selection } };
 }
 
 export function grantBonus(progress: CampaignProgressV1, bonusId: string): CampaignProgressV1 {

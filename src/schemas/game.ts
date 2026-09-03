@@ -40,6 +40,12 @@ export interface PlayerSettings {
   reducedMotion: boolean;
 }
 
+/** The one topic+question the wheel landed on for a given bonus visit — recorded once, read on every re-render/refresh so the result never changes mid-visit and the wheel never re-rolls. */
+export interface BonusSelection {
+  topicId: string;
+  questionId: string;
+}
+
 export interface CampaignProgressV1 {
   schemaVersion: 1;
   characterId: CharacterId | null;
@@ -52,6 +58,8 @@ export interface CampaignProgressV1 {
   equippedCosmetics: Record<'head' | 'armor' | 'movement' | 'emblem', string | null>;
   unlockedPowerIds: string[];
   appliedTransactionIds: string[];
+  /** Keyed by visit bonus id ('bonus_1' | 'bonus_2' | 'bonus_3'). The set of topics/questions already used this journey is derived from these values — never stored redundantly. */
+  bonusSelections: Record<string, BonusSelection>;
   settings: PlayerSettings;
   updatedAt: string;
 }

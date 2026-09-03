@@ -1,15 +1,17 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
-import type { CampaignProgressV1, CharacterId, CosmeticItem, PlayerSettings } from '../schemas/game';
-import { commitBattleBest, createInitialProgress, grantBonus, loadProgress, purchaseCosmetic, saveProgress, selectCharacter } from '../services/progress';
+import type { BonusSelection, CampaignProgressV1, CharacterId, CosmeticItem, PlayerSettings } from '../schemas/game';
+import { commitBattleBest, createInitialProgress, grantBonus, loadProgress, purchaseCosmetic, recordBonusSelection, saveProgress, selectCharacter } from '../services/progress';
 import { audio } from '../services/audio';
 import { resolveMusicCue } from '../services/musicRouting';
+import { bonusTopics, chooseBonusSelection } from '../content/bonus';
 
 interface GameContextValue {
   progress: CampaignProgressV1;
   hasJourney: boolean;
   setCharacter: (id: CharacterId) => void;
   completeBattle: (id: string, order: number, score: number, power?: string) => { delta: number; best: number };
+  chooseBonusTopic: (visitBonusId: string) => BonusSelection;
   completeBonus: (id: string) => void;
   buyCosmetic: (item: CosmeticItem) => boolean;
   updateSettings: (settings: Partial<PlayerSettings>) => void;
@@ -55,6 +57,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const previousBest = progressRef.current.battleBestHalfUnits[id] ?? 0;
       const next = persist((previous) => commitBattleBest(previous, id, order, score, power));
       return { delta: Math.max(0, next.battleBestHalfUnits[id] - previousBest), best: next.battleBestHalfUnits[id] };
+    },
+    chooseBonusTopic: (visitBonusId) => {
+      // Idempotent by design: a bonus visit that already has a recorded
+      // selection returns it as-is (refresh-safe, no re-roll). Reading and
+      // writing through `progressRef` — not `progress` — protects the same
+      // way `completeBattle` does against a same-tick double-click racing
+      // two draws for the same visit.
+      const existing = progressRef.current.bonusSelections[visitBonusId];
+      if (existing) return existing;
+      const used = Object.values(progressRef.current.bonusSelections);
+      const selection = chooseBonusSelection(bonusTopics, used.map((entry) => entry.topicId), used.map((entry) => entry.questionId));
+      const next = persist((previous) => recordBonusSelection(previous, visitBonusId, selection));
+      return next.bonusSelections[visitBonusId];
     },
     completeBonus: (id) => { persist((previous) => grantBonus(previous, id)); },
     buyCosmetic: (item) => {
