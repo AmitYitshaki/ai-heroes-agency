@@ -43,6 +43,7 @@ function StandardBattle({ battleId }: { battleId: string }) {
   const region = battle ? regionForBattle(battle.order) : regionForBattle(1);
 
   useEffect(() => { headingRef.current?.focus(); }, [phase]);
+  useEffect(() => { if (battle?.villain) playCue('boss'); }, [battle?.battleId]);
   useEffect(() => {
     if (phase !== 'dispatch') return;
     const timer = window.setTimeout(() => runEvaluation(), progress.settings.reducedMotion ? 250 : attempts ? 1200 : 2400);

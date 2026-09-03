@@ -46,6 +46,7 @@ export function FinalBattlePage() {
   const [score, setScore] = useState<{ value:number; delta:number; best:number } | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => { heading.current?.focus(); }, [phase, outcome]);
+  useEffect(() => { if (progress.nextBattleOrder >= 23) playCue('boss'); }, []);
   const blocked = Boolean(gateMessage);
   const counterClass = draft.length >= 600 ? 'limit' : draft.length >= 540 ? 'near' : '';
   const builderReady = useMemo(() => ['goal','limit','format','check'].every((key) => builder[key] === 'correct'), [builder]);

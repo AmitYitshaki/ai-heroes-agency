@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Award, Check, Map, RotateCcw, Share2, ShieldCheck, Sparkles } from 'lucide-react';
 import { AppShell, Button, CharacterArt, Ltr, Stars } from '../../components/ui';
@@ -8,7 +9,9 @@ export function FinalePage() {
   const { progress, playCue } = useGame();
   const navigate = useNavigate();
   const totalBattleHalf = Object.values(progress.battleBestHalfUnits).reduce((sum,value)=>sum+value,0);
-  if (!progress.battleBestHalfUnits.battle_23) {
+  const unlocked = Boolean(progress.battleBestHalfUnits.battle_23);
+  useEffect(() => { if (unlocked) playCue('ceremony'); }, [unlocked]);
+  if (!unlocked) {
     return <AppShell><section className="screen locked-finale page-enter"><CharacterArt id="char_aleph_briefing" alt="מפקדת אלף ממתינה בסוכנות"/><h1>טקס ההסמכה עדיין נעול</h1><p>השלימו את משימת הגמר כדי לפתוח את התעודה.</p><Button onClick={()=>navigate(progress.nextBattleOrder === 23 ? '/battle/battle_23' : '/map')}><Map/> חזרה למשימה</Button></section></AppShell>;
   }
   const share = async () => { const data={title:'סוכנות גיבורי ה־AI',text:'סיימתי את ההכשרה בסוכנות גיבורי ה־AI! כוח־העל שלנו הוא לדעת לבקש.',url:location.origin}; try{if(navigator.share)await navigator.share(data);else await navigator.clipboard.writeText(`${data.text} ${data.url}`)}catch{/* user cancelled */} };

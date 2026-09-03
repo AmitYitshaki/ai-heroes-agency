@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import type { CampaignProgressV1, CharacterId, CosmeticItem, PlayerSettings } from '../schemas/game';
 import { commitBattleBest, createInitialProgress, grantBonus, loadProgress, purchaseCosmetic, saveProgress, selectCharacter } from '../services/progress';
 import { audio } from '../services/audio';
+import { resolveMusicCue } from '../services/musicRouting';
 
 interface GameContextValue {
   progress: CampaignProgressV1;
@@ -36,7 +37,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (audioUnlocked) audio.startMusic(progress.settings.musicEnabled, location.pathname.includes('/battle/'));
+    if (audioUnlocked) audio.startMusic(progress.settings.musicEnabled, resolveMusicCue(location.pathname));
   }, [audioUnlocked, progress.settings.musicEnabled, location.pathname]);
 
   const persist = useCallback((updater: (previous: CampaignProgressV1) => CampaignProgressV1) => {
