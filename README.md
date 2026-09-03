@@ -7,7 +7,7 @@
 דרישות: Node.js 20 ומעלה ו־npm.
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -19,7 +19,10 @@ npm run dev
 npm run typecheck
 npm test
 npm run build
+npm run preview
 ```
+
+`npm run preview` מגיש את תיקיית `dist/` לאחר build לצורך smoke test מקומי של גרסת הייצור.
 
 אם משתנים קובצי המקור שבתיקיית `handoff/assets/characters`, יש להריץ:
 

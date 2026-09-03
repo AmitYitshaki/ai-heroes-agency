@@ -36,16 +36,19 @@ const DUCK_IN_MS = 260;
 
 class AudioManager {
   private context: AudioContext | null = null;
+  private unlocked = false;
   private currentMusic: Howl | null = null;
   private currentMusicCue: MusicCue | null = null;
   private sfxCache = new Map<SfxCue, Howl>();
+  private activeOscillators = new Set<OscillatorNode>();
 
   /** Must run inside a user-gesture handler — browsers block audio until one occurs. */
   unlock() {
+    this.unlocked = true;
     try {
       if (!this.context) this.context = new AudioContext();
-      void this.context.resume();
-      if (Howler.ctx && Howler.ctx.state === 'suspended') void Howler.ctx.resume();
+      void Promise.resolve(this.context.resume()).catch(() => undefined);
+      if (Howler.ctx && Howler.ctx.state === 'suspended') void Promise.resolve(Howler.ctx.resume()).catch(() => undefined);
     } catch {
       /* AudioContext unsupported or blocked (e.g. some in-app browsers); the
          game stays fully playable, just silent — see A11Y-AUD-02. */
@@ -53,14 +56,15 @@ class AudioManager {
   }
 
   play(cue: SfxCue, enabled = true) {
-    if (!enabled) return;
+    if (!enabled || !this.unlocked) return;
     const src = sfxSources[cue];
     if (src) { this.playFile(cue, src); return; }
     this.playSynthesized(cue);
   }
 
   startMusic(enabled: boolean, cue: MusicCue) {
-    if (!enabled) { this.stopMusic(); this.currentMusicCue = cue; return; }
+    if (!enabled) { this.stopMusic(true); this.currentMusicCue = cue; return; }
+    if (!this.unlocked) { this.currentMusicCue = cue; return; }
     if (this.currentMusicCue === cue && this.currentMusic) return; // already playing this cue
     const outgoing = this.currentMusic;
     this.currentMusic = null;
@@ -85,13 +89,24 @@ class AudioManager {
     }
   }
 
-  stopMusic() {
+  stopMusic(immediate = false) {
     const outgoing = this.currentMusic;
     this.currentMusic = null;
     this.currentMusicCue = null;
     if (!outgoing) return;
+    if (immediate) {
+      try { outgoing.stop(); outgoing.unload(); } catch { /* ignore */ }
+      return;
+    }
     try { outgoing.fade(MUSIC_VOLUME, 0, 300); } catch { /* ignore */ }
     setTimeout(() => { try { outgoing.stop(); outgoing.unload(); } catch { /* ignore */ } }, 350);
+  }
+
+  /** Immediately silences file-backed and synthesized effects when muted. */
+  stopEffects() {
+    this.sfxCache.forEach((howl) => { try { howl.stop(); } catch { /* ignore */ } });
+    this.activeOscillators.forEach((oscillator) => { try { oscillator.stop(); } catch { /* already stopped */ } });
+    this.activeOscillators.clear();
   }
 
   private playFile(cue: SfxCue, src: string) {
@@ -102,6 +117,7 @@ class AudioManager {
         this.sfxCache.set(cue, howl);
       }
       this.duckMusic();
+      howl.stop();
       howl.play();
     } catch {
       this.playSynthesized(cue);
@@ -133,6 +149,8 @@ class AudioManager {
     oscillator.frequency.value = frequency;
     gain.gain.value = 0;
     oscillator.connect(gain).connect(this.context.destination);
+    this.activeOscillators.add(oscillator);
+    oscillator.addEventListener('ended', () => this.activeOscillators.delete(oscillator), { once: true });
     const start = this.context.currentTime + delay;
     gain.gain.setValueAtTime(0, start);
     gain.gain.linearRampToValueAtTime(gainValue, start + 0.015);

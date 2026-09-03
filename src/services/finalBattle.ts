@@ -26,6 +26,19 @@ export function runLocalGate(input: string): LocalGateResult {
 
 export interface FinalBattleClassifier { classify(normalizedText: string): Promise<Battle23OutcomeKey>; }
 
+/**
+ * The single runtime boundary for both the local classifier and a future
+ * Base44 adapter. Invalid external values are closed locally; transport or
+ * adapter failures return null so the UI can enter the offline builder.
+ */
+export async function classifyWithSafeFallback(classifier: FinalBattleClassifier, normalizedText: string): Promise<Battle23OutcomeKey | null> {
+  try {
+    return validateClassifierOutcome(await classifier.classify(normalizedText));
+  } catch {
+    return null;
+  }
+}
+
 export class LocalFinalBattleClassifier implements FinalBattleClassifier {
   async classify(text: string): Promise<Battle23OutcomeKey> {
     if (/בלונים|מופע/u.test(text)) return 'unverified_information';

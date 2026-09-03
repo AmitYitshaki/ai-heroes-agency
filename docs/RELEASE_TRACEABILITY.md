@@ -90,22 +90,22 @@ Authority order for any conflict found while building this table: (1) safety/pri
 | AC-REL-003 | Errors offer safe retry/map/fallback | `ErrorBoundary.tsx` (**added this round**), guard screens on every locked route | Live test: render crash → reload → progress intact | PASS |
 | AC-PERF-001..002 | Mobile load target; interactions ack <100ms | — | Not formally profiled (no Lighthouse/perf run in this pass); React state updates are synchronous, no network round-trip in the interaction path | PARTIAL |
 | AC-PERF-003 | Assets responsive, lazy-loaded, non-blocking | `CharacterArt` `loading="lazy"`, per-battle asset loading | Each screen loads only its own villain/Loop-X pose, never all 23 battles' assets at once | PASS |
-| AC-PERF-004 | Bundle/route budgets documented | `npm run build` output | JS 328KB / 101.8KB gzip, CSS 26KB / 6KB gzip, character assets 1.8MB total for 42 files (see final report) | PASS |
+| AC-PERF-004 | Bundle/route budgets documented | `npm run build` output | Release-gate build: JS 367.51KB / 112.13KB gzip, CSS 25.94KB / 5.99KB gzip, character assets 1.67MiB total for 42 files; runtime audio 15.00MiB total for 11 files | PASS |
 
 ## Audio, animation and assets
 
 | ID | Requirement | Where | Evidence | Status |
 |---|---|---|---|---|
-| AC-MEDIA-001 | Map/battle music + effects exist | `services/audio.ts` | Procedurally synthesized via Web Audio (no external files) — sidesteps the licensing blocker entirely | PASS |
+| AC-MEDIA-001 | Map/battle music + effects exist | `services/audio.ts` | Howler plays 7 local music tracks and 4 local stingers; 6 short UI cues remain synthesized. All 11 runtime MP3 files passed a full ffmpeg decode check in the release gate. | PASS |
 | AC-MEDIA-002 | Separate persisted music/effects controls | `SettingsPage.tsx`, `progress.settings` | Live toggle test confirms immediate persistence | PASS |
 | AC-MEDIA-003 | One animation at a time; 2–4s outcomes | `.dispatch-progress` (2.4s), `.page-enter` (320ms) | CSS durations match `MOTION_AUDIO_SPEC.md` tokens | PASS |
 | AC-MEDIA-004 | Repeats shorten/skip; no flashing | `BattlePage.tsx` dispatch timer (`attempts ? 1200 : 2400`) | Repeat dispatch is shortened as designed; no flash/strobe anywhere in CSS | PASS |
 | AC-MEDIA-005 | Every animation has a static fallback | `.reduced-motion` global override | Verified via `reducedMotion` settings toggle | PASS |
-| AC-MEDIA-006 | Every asset licensed/original | `handoff/assets/characters/*` | Generated character art for this product; no third-party stock assets used | PASS |
+| AC-MEDIA-006 | Every asset licensed/original | `docs/THIRD_PARTY_ASSETS.md` | Character art is product-generated, but every delivered music/SFX license record remains `REQUIRES_USER_CONFIRMATION`. This blocks public release until a human supplies the purchase/download evidence. | PARTIAL |
 
 ## Summary
 
-- **PASS:** 54
-- **PARTIAL:** 4 (contrast tool measurement, real screen reader pass, on-screen-keyboard device test, formal perf profiling — all require tooling/hardware not available in this offline session)
+- **PASS:** 53
+- **PARTIAL:** 5 (audio-license evidence, contrast tool measurement, real screen reader pass, on-screen-keyboard device test, formal perf profiling — all require human/tooling work outside this code audit)
 - **DEFERRED:** 1 (full-journey timing pilot — needs real children testers, was already an open blocker in the source spec)
 - **FAIL:** 0

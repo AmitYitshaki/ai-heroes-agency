@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LocalFinalBattleClassifier, runLocalGate, validateClassifierOutcome } from '../services/finalBattle';
+import { classifyWithSafeFallback, LocalFinalBattleClassifier, runLocalGate, validateClassifierOutcome, type FinalBattleClassifier } from '../services/finalBattle';
 import { createInitialProgress } from '../services/progress';
 import { calculateScore, computeFinalBattleProvenance } from '../engine/scoring';
 
@@ -72,5 +72,12 @@ describe('battle 23 granular scoring (battle_23.md §י rubric)', () => {
 
   it('never lets a remote classifier claim the PII-safety verdict — that key is local-gate-only', () => {
     expect(validateClassifierOutcome('unsafe_personal_data')).toBe('unclear_goal_or_context');
+  });
+
+  it('validates adapter output and converts a rejected adapter call into the offline-builder sentinel', async () => {
+    const rejects: FinalBattleClassifier = { classify: async () => { throw new Error('network unavailable'); } };
+    const invalid = { classify: async () => 'unexpected_external_text' } as unknown as FinalBattleClassifier;
+    expect(await classifyWithSafeFallback(rejects, 'טקסט שכבר עבר שער מקומי')).toBeNull();
+    expect(await classifyWithSafeFallback(invalid, 'טקסט שכבר עבר שער מקומי')).toBe('unclear_goal_or_context');
   });
 });

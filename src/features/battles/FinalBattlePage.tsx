@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Bot, Check, CircleHelp, FileCheck2, LockKeyhole, ShieldCheck, Sparkles, WandSparkles } from 'lucide-react';
 import type { Battle23OutcomeKey } from '../../schemas/game';
 import { calculateScore, computeFinalBattleProvenance } from '../../engine/scoring';
-import { LocalFinalBattleClassifier, runLocalGate } from '../../services/finalBattle';
+import { classifyWithSafeFallback, LocalFinalBattleClassifier, runLocalGate } from '../../services/finalBattle';
 import { AppShell, Button, CharacterArt, Ltr, Stars } from '../../components/ui';
 import { useGame } from '../../state/GameContext';
 
@@ -58,7 +58,14 @@ export function FinalBattlePage() {
     const gate = runLocalGate(draft);
     if (!gate.ok) { setOutcome('unsafe_personal_data'); setGateMessage(gate.message); playCue('guard'); return; }
     setPhase('checking'); playCue('dispatch');
-    const result = await classifier.classify(gate.normalizedText);
+    const result = await classifyWithSafeFallback(classifier, gate.normalizedText);
+    if (!result) {
+      // Classifier/network failure: move directly to the deterministic local
+      // builder instead of mislabeling a technical error as a child's error.
+      setPhase('builder');
+      playCue('guard');
+      return;
+    }
     setOutcome(result);
     setAttempts((value) => result === 'full_success' ? value : value + 1);
     setPhase('outcome'); playCue(result === 'full_success' ? 'success' : 'feedback');

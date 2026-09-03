@@ -20,7 +20,7 @@ src/
   features/     one folder per screen/flow (battles, map, workshop, bonus, onboarding, settings, finale)
   components/   ui.tsx (Button, Modal, Stars, AppShell, briefcase panel, etc.), ErrorBoundary.tsx
   schemas/      game.ts — CampaignProgressV1 and all shared types
-  tests/        6 files, 54 tests — content, scoring, progress/persistence, finalBattle safety, battleFlow (all 23), audio
+  tests/        8 files, 58 tests — content, scoring, progress/persistence, finalBattle safety, battleFlow (all 23), audio, UI keyboard behavior and ErrorBoundary recovery
 ```
 
 - **React + TypeScript + Vite SPA.** `HashRouter` (not `BrowserRouter`) — deliberate, so refresh survives on any static host without server-side rewrite rules. Don't switch back without first confirming the actual Base44 hosting target has SPA-fallback configured and testing a real refresh.
@@ -48,11 +48,12 @@ Plus this round's closing commit, titled "fix: content-audit RTL and terminology
 ## 4. Verification commands
 
 ```bash
-npm install          # first time only
+npm ci               # clean, lockfile-reproducible install
 npm run typecheck    # tsc -b --pretty false
-npm test             # vitest run — 6 files, 54 tests
+npm test             # vitest run — 8 files, 58 tests
 npm run build        # tsc -b && vite build
 npm run dev           # local dev server, http://127.0.0.1:5173 (or next free port)
+npm run preview       # serve the production dist build for smoke testing
 ```
 
 Asset/audio rebuild pipelines (only needed if the *source* files change):

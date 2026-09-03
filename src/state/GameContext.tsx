@@ -62,7 +62,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
       persist((previous) => purchaseCosmetic(previous, item));
       return true;
     },
-    updateSettings: (settings) => { persist((previous) => ({ ...previous, settings: { ...previous.settings, ...settings } })); },
+    updateSettings: (settings) => {
+      if (settings.musicEnabled === false) audio.stopMusic(true);
+      if (settings.effectsEnabled === false) audio.stopEffects();
+      persist((previous) => ({ ...previous, settings: { ...previous.settings, ...settings } }));
+    },
     newJourney: () => { persist((previous) => createInitialProgress(previous.settings)); },
     playCue: (cue) => audio.play(cue, progressRef.current.settings.effectsEnabled),
   }), [progress, persist]);
