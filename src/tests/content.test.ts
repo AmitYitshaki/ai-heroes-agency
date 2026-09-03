@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { battles, isTrainingBattle, validateBattleRegistry } from '../content/battles';
+import { createSeededRandom, shuffle } from '../utils/shuffle';
 
 describe('battle registry', () => {
   it('contains the complete ordered 23-battle campaign', () => {
@@ -49,5 +50,23 @@ describe('battle registry', () => {
     expect(isTrainingBattle(battle02)).toBe(false);
     expect(battle02.villain).not.toBeNull();
     expect(battles.filter(isTrainingBattle).map((battle) => battle.battleId)).toEqual(['battle_01']);
+  });
+
+  it('confirms the authored content actually has a last-position bias, and that shuffling it removes that bias', () => {
+    // battle_02 is representative of the reported bug: its single correct
+    // choice ('children') is authored as the last item in `choices`.
+    const battle02 = battles.find((battle) => battle.battleId === 'battle_02')!;
+    const authoredCorrectIndex = battle02.choices.findIndex((choice) => battle02.correctChoiceIds.includes(choice.id));
+    expect(authoredCorrectIndex).toBe(battle02.choices.length - 1); // confirms the bug exists in content as authored
+
+    const trials = 3000;
+    const positionCounts = [0, 0, 0];
+    for (let seed = 0; seed < trials; seed++) {
+      const order = shuffle(battle02.choices, createSeededRandom(seed));
+      positionCounts[order.findIndex((choice) => battle02.correctChoiceIds.includes(choice.id))]++;
+    }
+    // The correct answer must not land in the same spot (almost) every time.
+    positionCounts.forEach((count) => expect(count).toBeGreaterThan(trials * 0.2));
+    expect(positionCounts[2]).toBeLessThan(trials * 0.6); // no longer "almost always last"
   });
 });

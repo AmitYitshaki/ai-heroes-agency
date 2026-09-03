@@ -7,6 +7,7 @@ import { calculateScore, evaluateSelections } from '../../engine/scoring';
 import type { ComponentProvenance } from '../../schemas/game';
 import { AppShell, Button, CharacterArt, Ltr, Stars, StatusPill } from '../../components/ui';
 import { useGame } from '../../state/GameContext';
+import { shuffle } from '../../utils/shuffle';
 import { FinalBattlePage } from './FinalBattlePage';
 
 type Phase = 'briefing' | 'compose' | 'dispatch' | 'outcome' | 'feedback' | 'victory' | 'score';
@@ -26,7 +27,7 @@ export function BattlePage() {
   return <StandardBattle battleId={battleId} />;
 }
 
-function StandardBattle({ battleId }: { battleId: string }) {
+export function StandardBattle({ battleId }: { battleId: string }) {
   const battle = battleById[battleId];
   const { progress, completeBattle, playCue } = useGame();
   const navigate = useNavigate();
@@ -51,18 +52,32 @@ function StandardBattle({ battleId }: { battleId: string }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
+  // battle_14 ("ordered") is a sequential-steps puzzle whose choice labels
+  // spell out their own step number ("1. ...", "2. ..."), and correctness is
+  // judged by the child's *click order*, not by screen position — shuffling
+  // it would desync the on-screen position badge from that embedded number
+  // without adding any real difficulty. Every other battle's display order
+  // carries no meaning, so it's shuffled once per battle visit to remove the
+  // "correct answer is always last" position bias found in user QA.
+  const ordered = battle?.order === 14;
+  const shuffledChoices = useMemo(() => {
+    if (!battle) return [];
+    return ordered ? battle.choices : shuffle(battle.choices);
+  // Deliberately depends only on `battle` (stable per mount/battleId), never
+  // on `attempts`/`selected`/`retained` — the order must not jump mid-attempt.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [battle]);
   const visibleChoices = useMemo(() => {
     if (!battle) return [];
-    if (attempts < 4) return battle.choices;
-    const correct = battle.choices.filter((choice) => battle.correctChoiceIds.includes(choice.id));
-    const distractor = battle.choices.find((choice) => !battle.correctChoiceIds.includes(choice.id));
+    if (attempts < 4) return shuffledChoices;
+    const correct = shuffledChoices.filter((choice) => battle.correctChoiceIds.includes(choice.id));
+    const distractor = shuffledChoices.find((choice) => !battle.correctChoiceIds.includes(choice.id));
     return distractor ? [...correct, distractor] : correct;
-  }, [battle, attempts]);
+  }, [battle, attempts, shuffledChoices]);
 
   if (!battle) return <AppShell><section className="screen"><h1>המשימה לא נמצאה</h1><p>מזהה הקרב אינו קיים. ההתקדמות לא השתנתה.</p><Button onClick={() => navigate('/map')}>חזרה למפה</Button></section></AppShell>;
   if (battle.order > progress.nextBattleOrder) return <AppShell><section className="screen guard"><ShieldCheck/><h1>המשימה עדיין נעולה</h1><p>השלימו קודם את קרב <Ltr>{battle.order - 1}</Ltr>. שום התקדמות לא השתנתה.</p><Button onClick={() => navigate('/map')}>חזרה למפה</Button></section></AppShell>;
 
-  const ordered = battle.order === 14;
   const training = isTrainingBattle(battle);
   const choose = (id: string) => {
     if (retained.includes(id)) return;
