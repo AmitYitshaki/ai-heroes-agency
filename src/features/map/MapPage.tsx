@@ -4,6 +4,7 @@ import { ArrowLeft, Check, LockKeyhole, Pencil, RotateCcw, ShieldCheck, Star } f
 import { battles } from '../../content/battles';
 import { regions } from '../../content/regions';
 import { AppShell, Button, CharacterArt, Ltr, ProgressBar } from '../../components/ui';
+import { EquippedLoop } from '../../components/EquippedLoop';
 import { displayStars } from '../../engine/scoring';
 import { useGame } from '../../state/GameContext';
 
@@ -16,7 +17,11 @@ export function MapPage() {
   return <AppShell><section className="map-page page-enter">
     <header className="map-hero">
       <div><span className="eyebrow">מפת המטה</span><h1>{progress.nextBattleOrder === 24 ? 'המסע הושלם!' : `המשימה הבאה: קרב ${current}`}</h1><p>{progress.nextBattleOrder === 24 ? 'כל האזורים בטוחים. אפשר לשפר שיאים בכל עת.' : battles[current - 1].title}</p></div>
-      <div className="map-hero__character"><CharacterArt id={progress.characterId === 'heroine' ? 'char_heroine_map' : 'char_hero_map'} alt="הדמות שנבחרה על מפת הסוכנות" /><Button variant="ghost" onClick={() => setSwitching(!switching)}><Pencil /> החלפת דמות</Button></div>
+      <div className="map-hero__character">
+        <CharacterArt id={progress.characterId === 'heroine' ? 'char_heroine_map' : 'char_hero_map'} alt="הדמות שנבחרה על מפת הסוכנות" />
+        <div className="map-hero__loop-companion"><EquippedLoop poseId="char_loop_idle" alt="לופּ-X עם הציוד הנוכחי" equipped={progress.equippedCosmetics} className="equipped-loop--compact" /></div>
+        <Button variant="ghost" onClick={() => setSwitching(!switching)}><Pencil /> החלפת דמות</Button>
+      </div>
     </header>
     {switching && <div className="switcher" role="group" aria-label="החלפת דמות"><Button variant={progress.characterId==='hero'?'primary':'secondary'} onClick={()=>{setCharacter('hero');setSwitching(false)}}>גיבור־על</Button><Button variant={progress.characterId==='heroine'?'primary':'secondary'} onClick={()=>{setCharacter('heroine');setSwitching(false)}}>גיבורת־על</Button><p>ההתקדמות נשמרת.</p></div>}
     <ProgressBar value={completed} />

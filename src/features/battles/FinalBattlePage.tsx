@@ -6,6 +6,7 @@ import { calculateScore, computeFinalBattleProvenance } from '../../engine/scori
 import { classifyWithSafeFallback, LocalFinalBattleClassifier, runLocalGate } from '../../services/finalBattle';
 import { villainPoseAssetId } from '../../content/villains';
 import { AppShell, Button, CharacterArt, Ltr, Stars } from '../../components/ui';
+import { EquippedLoop } from '../../components/EquippedLoop';
 import { VillainReaction } from '../../components/VillainReaction';
 import { useGame } from '../../state/GameContext';
 
@@ -89,7 +90,7 @@ export function FinalBattlePage() {
 
   return <AppShell><article className="battle battle--finale">
     <header className="battle-bar"><span><Ltr>קרב 23 / 23</Ltr></span><span className="skill-chip"><Sparkles/> שילוב מלא</span></header>
-    {phase === 'briefing' && <section className="battle-panel intro-panel finale-intro"><div className="stage"><CharacterArt id="char_loop_idle" alt="לופּ-X מול לוח הבקרה המשובש"/><div className="stage__versus">מול</div><CharacterArt id={villainPoseAssetId('finale', 'briefing')!} alt="המשבש מערבב את התכנית"/></div><span className="eyebrow">משימת הגמר</span><h1 ref={heading} tabIndex={-1}>שחזור התכנית</h1><p className="story">המשבש מחק את לוח הבקרה! שחזרו את התכנית בעזרת המדריך.</p><Button onClick={() => setPhase('write')}>פתחו את המדריך</Button></section>}
+    {phase === 'briefing' && <section className="battle-panel intro-panel finale-intro"><div className="stage"><EquippedLoop poseId="char_loop_idle" alt="לופּ-X מול לוח הבקרה המשובש" equipped={progress.equippedCosmetics}/><div className="stage__versus">מול</div><CharacterArt id={villainPoseAssetId('finale', 'briefing')!} alt="המשבש מערבב את התכנית"/></div><span className="eyebrow">משימת הגמר</span><h1 ref={heading} tabIndex={-1}>שחזור התכנית</h1><p className="story">המשבש מחק את לוח הבקרה! שחזרו את התכנית בעזרת המדריך.</p><Button onClick={() => setPhase('write')}>פתחו את המדריך</Button></section>}
     {phase === 'write' && <section className="battle-panel final-work page-enter">
       <VillainReaction regionId="finale" pose="watching" />
       <header><span className="eyebrow"><FileCheck2/> מדריך מאושר</span><h1 ref={heading} tabIndex={-1}>כתבו ללופּ בקשה מלאה</h1></header>
@@ -100,10 +101,10 @@ export function FinalBattlePage() {
       {attempts > 0 && !blocked && <div className="help-note"><CircleHelp/><p>שמרו את החלקים שעובדים ותקנו רק את הרכיב שסומן.</p><span><Ltr>ניסיון {Math.min(attempts + 1, 6)} / 6</Ltr></span></div>}
       <div className="sticky-action"><Button disabled={!draft.trim()} onClick={dispatch}>{draft.trim() ? 'שגרו לבדיקה' : 'כתבו בקשה כדי לשגר'}</Button>{attempts >= 3 && <Button variant="ghost" onClick={()=>setPhase('builder')}>עברו לבונה המודרך</Button>}</div></div></div>
     </section>}
-    {phase === 'checking' && <section className="battle-panel dispatch-panel" aria-busy="true"><h1 ref={heading} tabIndex={-1}>בודק מקומית ומשגר…</h1><CharacterArt id="char_loop_scan" alt="לופּ-X סורק את הבקשה"/><div className="dispatch-progress"><span/></div><p>הטקסט נשאר בזיכרון המסך בלבד.</p></section>}
+    {phase === 'checking' && <section className="battle-panel dispatch-panel" aria-busy="true"><h1 ref={heading} tabIndex={-1}>בודק מקומית ומשגר…</h1><EquippedLoop poseId="char_loop_scan" alt="לופּ-X סורק את הבקשה" equipped={progress.equippedCosmetics}/><div className="dispatch-progress"><span/></div><p>הטקסט נשאר בזיכרון המסך בלבד.</p></section>}
     {phase === 'outcome' && outcome && <section className={`battle-panel outcome-panel ${outcome === 'full_success' ? 'success' : 'partial'}`} aria-live="polite">
       {outcome !== 'full_success' && <VillainReaction regionId="finale" pose="reaction" />}
-      <CharacterArt id={outcome === 'full_success' ? 'char_loop_victory' : 'char_loop_confused'} alt="לופּ-X מציג את תוצאת הבקשה"/><span className="eyebrow">{outcome === 'full_success' ? 'תוצאה מלאה' : 'תוצאה לבדיקתכם'}</span><h1 ref={heading} tabIndex={-1}>{outcomes[outcome].title}</h1><p className="result-copy">{outcomes[outcome].body}</p><div className="causal"><strong>השינוי הבא</strong><p>{outcomes[outcome].tip}</p></div>{outcome === 'full_success' ? <Button onClick={()=>finish('text')}>לטקס הכוכבים</Button> : <><Button variant="improve" onClick={()=>attempts >= 6 ? setPhase('builder') : setPhase('write')}>{attempts >= 6 ? 'השלימו עם לופּ' : 'ערכו רכיב אחד'}</Button><Button variant="ghost" onClick={()=>setPhase('builder')}>לבונה המודרך</Button></>}</section>}
+      <EquippedLoop poseId={outcome === 'full_success' ? 'char_loop_victory' : 'char_loop_confused'} alt="לופּ-X מציג את תוצאת הבקשה" equipped={progress.equippedCosmetics}/><span className="eyebrow">{outcome === 'full_success' ? 'תוצאה מלאה' : 'תוצאה לבדיקתכם'}</span><h1 ref={heading} tabIndex={-1}>{outcomes[outcome].title}</h1><p className="result-copy">{outcomes[outcome].body}</p><div className="causal"><strong>השינוי הבא</strong><p>{outcomes[outcome].tip}</p></div>{outcome === 'full_success' ? <Button onClick={()=>finish('text')}>לטקס הכוכבים</Button> : <><Button variant="improve" onClick={()=>attempts >= 6 ? setPhase('builder') : setPhase('write')}>{attempts >= 6 ? 'השלימו עם לופּ' : 'ערכו רכיב אחד'}</Button><Button variant="ghost" onClick={()=>setPhase('builder')}>לבונה המודרך</Button></>}</section>}
     {phase === 'builder' && <section className="battle-panel builder-panel"><WandSparkles/><h1 ref={heading} tabIndex={-1}>בונים יחד עם לופּ</h1><p>בחרו אפשרות בטוחה בכל שורה. הבונה פועל מקומית גם בלי רשת.</p><div className="builder-slots">
       <BuilderSelect label="מטרה והקשר" value={builder.goal} onChange={(value)=>setBuilder({...builder,goal:value})} correct="שחזר את לוח התכנית לפי המדריך" wrong="סדר את החדר" />
       <BuilderSelect label="אילוץ" value={builder.limit} onChange={(value)=>setBuilder({...builder,limit:value})} correct="בדיוק חמישה שלבים" wrong="ארוך ככל האפשר" />
@@ -112,7 +113,7 @@ export function FinalBattlePage() {
     </div>{builderReady && <div className="assembled-prompt"><Check/><p>{approvedPrompt}</p></div>}<Button disabled={!builderReady} onClick={()=>finish('builder')}>{builderReady ? 'שגרו את התכנית' : 'השלימו את כל הרכיבים'}</Button></section>}
     {phase === 'score' && score && <section className="battle-panel score-panel final-score">
       <VillainReaction regionId="finale" pose="defeated" />
-      <CharacterArt id="char_loop_victory" alt="לופּ-X לאחר שחזור הסוכנות"/><span className="mission-stamp"><Check/> הגמר הושלם</span><h1 ref={heading} tabIndex={-1}>הסוכנות חזרה לפעולה!</h1><Stars halfUnits={score.value}/><p>מטרה, הקשר, אילוץ, פורמט ובדיקה פעלו יחד — בלי לשתף מידע אישי.</p><p className="delta">נוספו לארנק <strong><Ltr>+{score.delta / 2}</Ltr> כוכבים</strong></p><Button onClick={()=>navigate('/finale')}>לטקס ההסמכה</Button></section>}
+      <EquippedLoop poseId="char_loop_victory" alt="לופּ-X לאחר שחזור הסוכנות" equipped={progress.equippedCosmetics}/><span className="mission-stamp"><Check/> הגמר הושלם</span><h1 ref={heading} tabIndex={-1}>הסוכנות חזרה לפעולה!</h1><Stars halfUnits={score.value}/><p>מטרה, הקשר, אילוץ, פורמט ובדיקה פעלו יחד — בלי לשתף מידע אישי.</p><p className="delta">נוספו לארנק <strong><Ltr>+{score.delta / 2}</Ltr> כוכבים</strong></p><Button onClick={()=>navigate('/finale')}>לטקס ההסמכה</Button></section>}
   </article></AppShell>;
 }
 

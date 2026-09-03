@@ -7,6 +7,7 @@ import { villainPoseAssetId } from '../../content/villains';
 import { calculateScore, evaluateSelections } from '../../engine/scoring';
 import type { ComponentProvenance } from '../../schemas/game';
 import { AppShell, Button, CharacterArt, Ltr, Stars, StatusPill } from '../../components/ui';
+import { EquippedLoop } from '../../components/EquippedLoop';
 import { VillainReaction } from '../../components/VillainReaction';
 import { useGame } from '../../state/GameContext';
 import { shuffle } from '../../utils/shuffle';
@@ -151,7 +152,7 @@ export function StandardBattle({ battleId }: { battleId: string }) {
     <header className="battle-bar"><span><Ltr>קרב {battle.order} / 23</Ltr></span><span className="skill-chip"><Target />{battle.skillLabel}</span></header>
     {phase === 'briefing' && <section className="battle-panel intro-panel page-enter">
       <div className="stage">
-        <CharacterArt id="char_loop_idle" alt="לופּ-X ממתין לפקודה" />
+        <EquippedLoop poseId="char_loop_idle" alt="לופּ-X ממתין לפקודה" equipped={progress.equippedCosmetics} />
         <div className="stage__versus">{training ? 'עם' : 'מול'}</div>
         {training
           ? <CharacterArt id="char_aleph_neutral" alt="מפקדת אלף מלווה את אימון הסימולטור" />
@@ -191,16 +192,16 @@ export function StandardBattle({ battleId }: { battleId: string }) {
       {attempts > 0 && <div className="help-note"><Lightbulb/><p>{helpMessages[Math.min(attempts - 1, 5)]}</p><span><Ltr>שלב עזרה {Math.min(attempts, 6)} / 6</Ltr></span></div>}
       <div className="sticky-action"><Button disabled={selected.length !== battle.correctChoiceIds.length} onClick={() => { setPhase('dispatch'); playCue('dispatch'); }}>{selected.length !== battle.correctChoiceIds.length ? `בחרו ${battle.correctChoiceIds.length === 1 ? 'אפשרות' : `${battle.correctChoiceIds.length} רכיבים`}` : 'שגרו ללופּ'}</Button></div>
     </section>}
-    {phase === 'dispatch' && <section className="battle-panel dispatch-panel" aria-busy="true"><h1 ref={headingRef} tabIndex={-1}>משגר ללופּ…</h1><CharacterArt id="char_loop_launch" alt="לופּ-X משגר את הפרומפט" /><div className="dispatch-progress"><span /></div><p>לופּ מבצע בדיוק את הפרומפט שבניתם.</p></section>}
+    {phase === 'dispatch' && <section className="battle-panel dispatch-panel" aria-busy="true"><h1 ref={headingRef} tabIndex={-1}>משגר ללופּ…</h1><EquippedLoop poseId="char_loop_launch" alt="לופּ-X משגר את הפרומפט" equipped={progress.equippedCosmetics} /><div className="dispatch-progress"><span /></div><p>לופּ מבצע בדיוק את הפרומפט שבניתם.</p></section>}
     {phase === 'outcome' && <section className={`battle-panel outcome-panel ${success ? 'success' : 'partial'}`} aria-live="polite">
       {!success && <VillainReaction regionId={battle.regionId} pose="reaction" />}
-      <div className="world-result"><CharacterArt id={loopPose} alt={success ? 'לופּ-X מציג תוצאה מוצלחת' : 'לופּ-X מציג תוצאה חלקית'} /><div className="result-symbol" aria-hidden="true">{success ? '✓' : '…'}</div></div>
+      <div className="world-result"><EquippedLoop poseId={loopPose} alt={success ? 'לופּ-X מציג תוצאה מוצלחת' : 'לופּ-X מציג תוצאה חלקית'} equipped={progress.equippedCosmetics} /><div className="result-symbol" aria-hidden="true">{success ? '✓' : '…'}</div></div>
       <span className="eyebrow">{success ? 'תוצאה מלאה' : 'תוצאה חלקית'}</span><h1 ref={headingRef} tabIndex={-1}>{success ? 'המשימה הצליחה!' : 'לופּ פירש את הבקשה'}</h1><p className="result-copy">{outcome}</p>
       <div className="causal"><strong>למה זה קרה?</strong><p>{success ? battle.concept : battle.partialMessage}</p></div>
       <Button variant={success ? 'primary' : 'improve'} onClick={() => success ? setPhase('victory') : retry()}>{success ? 'לניצחון' : demoDone ? 'שפרו את הפרומפט' : 'הוסיפו מטרה'}</Button>
     </section>}
     {phase === 'feedback' && <section className="battle-panel guided-panel"><WandSparkles/><h1 ref={headingRef} tabIndex={-1}>משלימים יחד</h1><p>החלקים הנכונים נשמרו. לופּ יסמן את הפתרון כדי שתוכלו להשלים את הקרב.</p><div className="solution-preview">{battle.correctChoiceIds.map((id) => <StatusPill key={id} kind="retained">{battle.choices.find((choice) => choice.id === id)?.label}</StatusPill>)}</div><Button onClick={guided}>השלימו עם לופּ</Button></section>}
-    {phase === 'victory' && <section className="battle-panel victory-panel"><VillainReaction regionId={battle.regionId} pose="defeated" /><CharacterArt id="char_loop_victory" alt="לופּ-X חוגג את הצלחת המשימה" /><Sparkles/><h1 ref={headingRef} tabIndex={-1}>חותמת משימה!</h1><p>{battle.successMessage}</p><blockquote>{battle.concept}</blockquote><Button onClick={goToScore}>חשבו כוכבים</Button></section>}
+    {phase === 'victory' && <section className="battle-panel victory-panel"><VillainReaction regionId={battle.regionId} pose="defeated" /><EquippedLoop poseId="char_loop_victory" alt="לופּ-X חוגג את הצלחת המשימה" equipped={progress.equippedCosmetics} /><Sparkles/><h1 ref={headingRef} tabIndex={-1}>חותמת משימה!</h1><p>{battle.successMessage}</p><blockquote>{battle.concept}</blockquote><Button onClick={goToScore}>חשבו כוכבים</Button></section>}
     {phase === 'score' && scoreData && <section className="battle-panel score-panel"><span className="mission-stamp"><Check/> המשימה הושלמה</span><h1 ref={headingRef} tabIndex={-1}>{scoreData.delta > 0 ? 'שיא חדש!' : 'אימון מצוין'}</h1><Stars halfUnits={scoreData.score}/><div className="criteria-list">{battle.criteria.map((criterion) => <div key={criterion}><Check/><span>{criterion}</span><strong>{aid === 'user_independent' ? '1' : aid === 'user_choice_two' ? '0.5' : 'מודרך'}</strong></div>)}</div><p className="delta">{scoreData.delta > 0 ? <>נוספו לארנק <strong><Ltr>+{scoreData.delta / 2}</Ltr> כוכבים</strong></> : <>השיא נשאר <strong><Ltr>{scoreData.best / 2} / 5</Ltr></strong></>}</p><Button onClick={next}>{battle.workshopVisit ? 'לסדנה' : 'התקדמו למפה'}</Button></section>}
   </article></AppShell>;
 }

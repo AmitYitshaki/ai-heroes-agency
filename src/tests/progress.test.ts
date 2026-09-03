@@ -29,6 +29,45 @@ describe('campaign progress', () => {
     expect(equippedAgain.equippedCosmetics[item.slot]).toBe(item.itemId);
   });
 
+  it('a first purchase auto-equips and charges exactly once; a same-tick replay/double-click never charges again', () => {
+    const funded = { ...createInitialProgress(), walletHalfUnits: 30 };
+    const item = cosmetics.find((candidate) => candidate.slot === 'head')!;
+    const afterFirstClick = purchaseCosmetic(funded, item);
+    expect(afterFirstClick.walletHalfUnits).toBe(30 - item.priceHalfUnits);
+    expect(afterFirstClick.purchasedCosmeticIds).toEqual([item.itemId]);
+    expect(afterFirstClick.equippedCosmetics.head).toBe(item.itemId); // purchase auto-equips
+
+    // Simulate a double-click / replayed request for the exact same purchase.
+    const afterDoubleClick = purchaseCosmetic(afterFirstClick, item);
+    expect(afterDoubleClick.walletHalfUnits).toBe(afterFirstClick.walletHalfUnits); // not charged twice
+    expect(afterDoubleClick.purchasedCosmeticIds).toEqual([item.itemId]); // not added twice
+  });
+
+  it('switching to a different already-owned item in the same slot is free (no wallet change)', () => {
+    const funded = { ...createInitialProgress(), walletHalfUnits: 100 };
+    const [itemA, itemB] = cosmetics.filter((candidate) => candidate.slot === 'armor');
+    const ownedBoth = purchaseCosmetic(purchaseCosmetic(funded, itemA), itemB);
+    expect(ownedBoth.equippedCosmetics.armor).toBe(itemB.itemId); // itemB, purchased last, is equipped
+    const walletAfterBothPurchases = ownedBoth.walletHalfUnits;
+
+    // Re-equip the first (already-owned) item — no additional cost.
+    const switchedBack = purchaseCosmetic(ownedBoth, itemA);
+    expect(switchedBack.walletHalfUnits).toBe(walletAfterBothPurchases);
+    expect(switchedBack.equippedCosmetics.armor).toBe(itemA.itemId);
+    expect(switchedBack.purchasedCosmeticIds).toEqual(ownedBoth.purchasedCosmeticIds); // still owns exactly the same two items
+  });
+
+  it('equippedCosmetics and purchasedCosmeticIds survive a save/load round trip (refresh persistence)', () => {
+    const item = cosmetics[0];
+    const equipped = purchaseCosmetic({ ...createInitialProgress(), walletHalfUnits: 50 }, item);
+    const memoryStore = new Map<string, string>();
+    const storage = { getItem: (key: string) => memoryStore.get(key) ?? null, setItem: (key: string, value: string) => { memoryStore.set(key, value); } };
+    saveProgress(equipped, storage);
+    const reloaded = loadProgress(storage);
+    expect(reloaded.equippedCosmetics).toEqual(equipped.equippedCosmetics);
+    expect(reloaded.purchasedCosmeticIds).toEqual(equipped.purchasedCosmeticIds);
+  });
+
   it('starting a new journey resets progress (including bonus history) but keeps comfort settings', () => {
     const played = {
       ...createInitialProgress(),
@@ -38,6 +77,7 @@ describe('campaign progress', () => {
       totalEarnedHalfUnits: 18,
       walletHalfUnits: 12,
       purchasedCosmeticIds: ['head_signal'],
+      equippedCosmetics: { head: 'head_signal', armor: null, movement: null, emblem: null },
       completedBonusIds: ['bonus_1'],
       bonusSelections: { bonus_1: { topicId: 'probability', questionId: 'probability_1' } },
       settings: { musicEnabled: false, effectsEnabled: false, reducedMotion: true },
@@ -49,6 +89,7 @@ describe('campaign progress', () => {
     expect(restarted.totalEarnedHalfUnits).toBe(0);
     expect(restarted.walletHalfUnits).toBe(0);
     expect(restarted.purchasedCosmeticIds).toEqual([]);
+    expect(restarted.equippedCosmetics).toEqual({ head: null, armor: null, movement: null, emblem: null });
     expect(restarted.completedBonusIds).toEqual([]);
     expect(restarted.bonusSelections).toEqual({}); // bonus history reset...
     expect(restarted.settings).toEqual(played.settings); // ...but comfort/audio settings are not
