@@ -6,21 +6,27 @@ Last updated: this document was introduced by the commit titled "fix: content-au
 
 **Release-candidate quality.** The full campaign is playable end to end: onboarding → character select → briefing → 23 battles across 4 regions + a tutorial + a finale → 4 workshop visits → 3 optional bonuses → certification ceremony. All 23 battles have been cross-checked against their authoritative specs (`handoff/source/04_BATTLE_CONTENT/battle_01.md`–`battle_23.md`) at least twice across different audit rounds; two content bugs were found and fixed (see §7). Zero known P0s. One P1 remains, scoped to something this environment genuinely cannot verify (real screen reader, real device on-screen keyboard), not more engineering. Audio licensing for every shipped file is now project-owner-confirmed (see §6 and `docs/THIRD_PARTY_ASSETS.md`) — note the confirmed music license is personal/private/non-commercial use only, which matters if this build is ever deployed publicly.
 
+**Onboarding now explains what a prompt is before battle_01.** The existing 3-panel `RecruitPage` briefing (unchanged screen, no new route) was rewritten to define "prompt," show a weak-vs-better example, and lightly preview the goal/context/constraint/format/test/improve skills, on top of the existing hero/villain-world framing — still 3 panels, still skippable. A returning player can reopen the same briefing (character selection skipped, no forced route into a battle) from Settings → "מה זה פרומפט?". See §5 items 10–11 for the two non-obvious bits this relies on.
+
 **What's NOT done, by design, per explicit product decisions:** no login/account, no chat, no multiplayer, no public leaderboard, no teacher/parent mode, no real-money purchases, no cloud sync. Do not add any of these without an explicit, new instruction — they were deliberately excluded (`01_PRODUCT_SPEC.md` §"אין להוסיף Login...").
 
 ## 2. Core architecture (don't relitigate these)
 
 ```text
 src/
-  content/      battles.ts (23 battle definitions + skillCatalog), regions.ts, catalog.ts (cosmetics/bonus questions)
+  content/      battles.ts (23 battle definitions + skillCatalog), regions.ts, catalog.ts (cosmetics),
+                bonus.ts (bonus topics/questions + anti-repeat picker)
   engine/       scoring.ts — pure, deterministic: calculateScore, evaluateSelections, computeFinalBattleProvenance
   services/     progress.ts (localStorage + migration), audio.ts (Howler-backed AudioManager), musicRouting.ts,
                 finalBattle.ts (local safety gate + classifier interface)
   state/        GameContext.tsx — single source of truth, ref-backed to avoid double-award races
   features/     one folder per screen/flow (battles, map, workshop, bonus, onboarding, settings, finale)
-  components/   ui.tsx (Button, Modal, Stars, AppShell, briefcase panel, etc.), ErrorBoundary.tsx
+  components/   ui.tsx (Button, Modal, Stars, AppShell, briefcase panel, etc.), ErrorBoundary.tsx, BonusWheel.tsx
+  utils/        shuffle.ts (Fisher-Yates + seeded RNG), wheelGeometry.ts (bonus wheel angle math)
   schemas/      game.ts — CampaignProgressV1 and all shared types
-  tests/        8 files, 58 tests — content, scoring, progress/persistence, finalBattle safety, battleFlow (all 23), audio, UI keyboard behavior and ErrorBoundary recovery
+  tests/        14 files, 100 tests — content, scoring, progress/persistence, finalBattle safety, battleFlow
+                (all 23), audio, UI keyboard behavior, ErrorBoundary recovery, battle-option shuffle, bonus
+                wheel geometry/anti-repeat, onboarding routing
 ```
 
 - **React + TypeScript + Vite SPA.** `HashRouter` (not `BrowserRouter`) — deliberate, so refresh survives on any static host without server-side rewrite rules. Don't switch back without first confirming the actual Base44 hosting target has SPA-fallback configured and testing a real refresh.
@@ -50,7 +56,7 @@ Plus this round's closing commit, titled "fix: content-audit RTL and terminology
 ```bash
 npm ci               # clean, lockfile-reproducible install
 npm run typecheck    # tsc -b --pretty false
-npm test             # vitest run — 8 files, 58 tests
+npm test             # vitest run — 14 files, 100 tests
 npm run build        # tsc -b && vite build
 npm run dev           # local dev server, http://127.0.0.1:5173 (or next free port)
 npm run preview       # serve the production dist build for smoke testing
@@ -78,6 +84,8 @@ These were made deliberately, in prior rounds, generally after hitting a real pr
 7. **Battle 23 scoring is per-criterion, not a single flat provenance** (`engine/scoring.ts` → `computeFinalBattleProvenance`) — this produces real intermediate results (e.g. 4.5 stars) matching `battle_23.md` §י's rubric. Don't collapse it back to one shared value for all four criteria.
 8. **`docs/handoff/` (tracked in git) vs `handoff/` (gitignored, root-only)** — `/handoff/` in `.gitignore` is anchored to the repo root specifically so it doesn't also match `docs/handoff/`. If you ever "clean up" the gitignore, make sure you don't re-break this.
 9. **`incoming/audio/` is tracked in git** (26MB, unlike the 91MB duplicate PNGs that were deliberately excluded) — it's the source-of-truth for `npm run audio:optimize`, not dead weight. Don't delete it.
+10. **`/bonus/:bonusId` renders through a small `BonusRoute` wrapper in `App.tsx` that sets `key={bonusId}`** — react-router-dom does not remount an element just because a route param changed within the same matched `Route`, but `BonusPage` reads its persisted wheel selection with a plain `useState` initializer that must re-run per visit. Don't drop the `key`; don't rely on "navigation always goes through /map between visits" as the safety net instead.
+11. **`RecruitPage`'s onboarding briefing doubles as a review screen** via `navigate('/recruit', { state: { briefingOnly: true } })` (wired from Settings' "מה זה פרומפט?" button) — this skips character re-selection and, on the last panel, calls `navigate(-1)` instead of routing into `battle_01`. Don't remove the `reviewOnly` branch or a returning player revisiting the explanation will get shoved into a fresh battle.
 
 ## 6. Open gaps
 

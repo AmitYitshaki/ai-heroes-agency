@@ -1,22 +1,40 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Bot, Check, Radio, Sparkles } from 'lucide-react';
+import { useState, type ReactNode } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Check, MessageSquare, Radio, Sparkles } from 'lucide-react';
 import type { CharacterId } from '../../schemas/game';
 import { AppShell, Button, CharacterArt } from '../../components/ui';
 import { useGame } from '../../state/GameContext';
 
 export function RecruitPage() {
   const { progress, setCharacter, playCue } = useGame();
-  const [choice, setChoice] = useState<CharacterId | null>(progress.characterId);
-  const [briefing, setBriefing] = useState(false);
-  const [panel, setPanel] = useState(0);
+  const location = useLocation();
   const navigate = useNavigate();
+  // A returning player can reach this same briefing again from Settings
+  // ("מה זה פרומפט?") without re-picking a character or being sent into
+  // battle_01 — see the two branches on `finish`/the ghost button below.
+  const reviewOnly = Boolean((location.state as { briefingOnly?: boolean } | null)?.briefingOnly);
+  const [choice, setChoice] = useState<CharacterId | null>(progress.characterId);
+  const [briefing, setBriefing] = useState(reviewOnly);
+  const [panel, setPanel] = useState(0);
   const choose = (id: CharacterId) => { setChoice(id); playCue('select'); };
   const continueFlow = () => { if (!choice) return; setCharacter(choice); setBriefing(true); };
-  const panels = [
-    { icon:<Radio />, title:'קריאת חירום', text:'ארבעת אזורי הסוכנות שובשו. בקשות עמומות מפעילות את לופּ בדרך הלא נכונה.' },
-    { icon:<Bot />, title:'הכירו את לופּ-X', text:'לופּ מבצע לפי ההוראות והדפוסים שקיבל. הוא לא יודע אם תשובה נכונה — אתם בודקים.' },
-    { icon:<Sparkles />, title:'כוח־העל שלכם', text:'כתבו הוראה, ראו כיצד לופּ מפרש אותה, ואז שפרו עד שהמשימה מצליחה.' },
+  const finish = () => (reviewOnly ? navigate(-1) : navigate('/battle/battle_01'));
+  const panels: Array<{ icon: ReactNode; title: string; text: ReactNode }> = [
+    {
+      icon: <Radio />,
+      title: 'קריאת חירום',
+      text: 'ארבעת אזורי הסוכנות שובשו כי בקשות היו עמומות מדי. לכל גיבור יש כוח־על, ושלכם הוא לדעת לבקש בבירור.',
+    },
+    {
+      icon: <MessageSquare />,
+      title: 'מה זה פרומפט?',
+      text: <>פרומפט הוא ההוראה שאתם נותנים ל־AI. ככל שהיא ברורה יותר, כך התוצאה שימושית יותר.<br /><strong>חלש:</strong> „תעזור לי”. <strong>טוב יותר:</strong> „הסבירו בשלושה צעדים איך להתכונן למבחן”.</>,
+    },
+    {
+      icon: <Sparkles />,
+      title: 'כוח־העל שלכם',
+      text: 'בכל משימה תוסיפו מטרה, הקשר, כללים ופורמט ברור, ותבדקו ותשפרו את התוצאה. לופּ־X מבצע בדיוק את מה שתבקשו — אז בואו נלמד לבקש כמו מהנדסי פרומפטים.',
+    },
   ];
   return <AppShell><section className="screen page-enter">
     {!briefing ? <>
@@ -28,9 +46,9 @@ export function RecruitPage() {
       <div className="sticky-action"><Button disabled={!choice} onClick={continueFlow}>{choice ? 'לתדריך הגיוס' : 'בחרו דמות'}</Button></div>
     </> : <div className="briefing">
       <div className="briefing__art"><CharacterArt id="char_aleph_briefing" alt="מפקדת אלף מעבירה תדריך" /><div className="speech">{panels[panel].icon}<h1>{panels[panel].title}</h1><p>{panels[panel].text}</p></div></div>
-      <div className="briefing__dots" aria-label={`פאנל ${panel + 1} מתוך 3`}>{panels.map((_,i)=><span key={i} className={i===panel?'active':''}/>)}</div>
-      <Button onClick={() => panel < panels.length - 1 ? setPanel(panel + 1) : navigate('/battle/battle_01')}>{panel < panels.length - 1 ? 'המשיכו' : 'לקרב ההדרכה'}</Button>
-      <Button variant="ghost" onClick={() => navigate('/battle/battle_01')}>דלגו לקרב</Button>
+      <div className="briefing__dots" aria-label={`פאנל ${panel + 1} מתוך ${panels.length}`}>{panels.map((_, i) => <span key={i} className={i === panel ? 'active' : ''} />)}</div>
+      <Button onClick={() => panel < panels.length - 1 ? setPanel(panel + 1) : finish()}>{panel < panels.length - 1 ? 'המשיכו' : reviewOnly ? 'הבנתי' : 'לקרב ההדרכה'}</Button>
+      <Button variant="ghost" onClick={() => reviewOnly ? navigate(-1) : navigate('/battle/battle_01')}>{reviewOnly ? 'סגרו' : 'דלגו לקרב'}</Button>
     </div>}
   </section></AppShell>;
 }
