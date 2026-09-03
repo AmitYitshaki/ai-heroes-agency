@@ -31,6 +31,11 @@ export const battles: BattleDefinition[] = [
 
 export const battleById = Object.fromEntries(battles.map((battle) => [battle.battleId, battle])) as Record<string, BattleDefinition>;
 
+export interface SkillCatalogEntry { powerId: string; label: string; battleOrder: number }
+export const skillCatalog: SkillCatalogEntry[] = battles
+  .filter((battle): battle is BattleDefinition & { unlockPower: string } => Boolean(battle.unlockPower))
+  .map((battle) => ({ powerId: battle.unlockPower, label: battle.skillLabel, battleOrder: battle.order }));
+
 export function validateBattleRegistry(registry = battles): string[] {
   const errors: string[] = [];
   if (registry.length !== 23) errors.push('ה־registry חייב להכיל בדיוק 23 קרבות');

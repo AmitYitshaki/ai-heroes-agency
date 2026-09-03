@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Secular+One&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #ECE7DC; }
+  * { box-sizing: border-box; }
+  a { color: #1E4FD8; }
+  a:hover { color: #14171F; }
+</style>
+</helmet>
+
+<div dir="rtl" style="font-family: Assistant, system-ui, sans-serif; color: #14171F; padding: 40px 40px 120px; direction: rtl;">
+<section style="max-width: 1500px; margin: 0 auto; display: flex; flex-direction: column; gap: 34px;">
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div style="font-family: 'Secular One', sans-serif; font-size: 13px; letter-spacing: .12em; color: #6B6355;">סוכנות גיבורי ה־AI · פלטפורמה מלאה · v2</div>
+    <h1 style="font-family: 'Secular One', sans-serif; font-size: 44px; line-height: 1.1; margin: 0;">16 · תדריך דמויות ופרומפטים לייצור</h1>
+    <p style="font-size: 18px; line-height: 1.55; max-width: 84ch; margin: 0; color: #3A3630; text-wrap: pretty;">תשע דמויות, <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">42</span> תנוחות. לכל דמות פרומפט בסיס באנגלית + רשימת תנוחות. הדרך היעילה: הריצו את פרומפט הבסיס פעם אחת, ואז אותו פרומפט עם התנוחה מוחלפת — כך הדמות נשארת עקבית.</p>
+  </div>
+
+  <!-- STYLE BLOCK -->
+  <div style="background: #14171F; color: #FFF7E9; border-radius: 20px; padding: 26px 28px;">
+    <div style="font-family: 'Secular One', sans-serif; font-size: 22px; color: #F0A81E; margin-bottom: 6px;">בלוק הסטייל · הדביקו אותו בתחילת כל פרומפט</div>
+    <p style="font-size: 16px; line-height: 1.55; margin: 0 0 14px; color: #F4EAD6;">זה מה שמחזיק את כל 42 התנוחות באותה שפה חזותית. אל תשנו אותו בין דמויות.</p>
+    <div style="background: #FFF7E9; color: #14171F; border-radius: 14px; padding: 16px; font: 400 15px/1.65 Heebo, monospace; direction: ltr; text-align: left;">
+      Flat 2D comic illustration, bold uniform 3px black ink outline on every shape, flat fill colors with a single soft highlight, no gradients, no gloss, no glow, no lens flare, no bloom. Printed comic book look on warm cream paper. Full body, centered, facing camera three-quarter view, feet visible, standing on nothing. Fully transparent background, PNG. Character must read clearly at 96 pixels tall. Friendly, bright, non-threatening, suitable for children aged 11 to 14. No text, no letters, no numbers, no logos, no watermark anywhere in the image. No weapons, no injury, no fire, no smoke.
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;">
+      <span style="background: rgba(255,247,233,.14); border: 2px solid #F0A81E; border-radius: 8px; padding: 5px 11px; font: 700 15px Assistant;">רקע שקוף · חובה</span>
+      <span style="background: rgba(255,247,233,.14); border: 2px solid #F0A81E; border-radius: 8px; padding: 5px 11px; font: 700 15px Assistant;">גוף מלא · אותה זווית</span>
+      <span style="background: rgba(255,247,233,.14); border: 2px solid #F0A81E; border-radius: 8px; padding: 5px 11px; font: 700 15px Assistant;">אפס טקסט בתמונה</span>
+      <span style="background: rgba(255,247,233,.14); border: 2px solid #F0A81E; border-radius: 8px; padding: 5px 11px; font: 700 15px Assistant;">קו דיו שחור אחיד</span>
+    </div>
+  </div>
+
+  <!-- WORKFLOW -->
+  <div style="background: #FFF0D6; border: 2px solid #A85C00; border-radius: 18px; padding: 22px 24px;">
+    <div style="font-family: 'Secular One', sans-serif; font-size: 21px; margin-bottom: 12px; color: #6B3B00;">איך לעבוד · סדר שחוסך זמן</div>
+    <div style="font-size: 17px; line-height: 1.75; color: #6B3B00;">
+      <strong>1.</strong> הריצו רק את <strong>ארבעת הפרומפטים בעדיפות ראשונה</strong> — לופּ, גיבור, גיבורה, מר בערך. איתם אפשר לבנות את כל אזור 1.<br>
+      <strong>2.</strong> שלחו לי תמונה אחת מכל דמות. אני אאשר שהיא עומדת במערכת (קו, ניגודיות, קריאות ב־96px) לפני שתייצרו 42.<br>
+      <strong>3.</strong> אחרי אישור — הריצו את שאר התנוחות עם אותו פרומפט בסיס, מחליפים רק את שורת התנוחה.<br>
+      <strong>4.</strong> שמרו בשמות שכתובים כאן (<span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">char_loop_idle.png</span>) — הם ה־assetId שהקוד מצפה לו.
+    </div>
+  </div>
+
+  <!-- LOOP -->
+  <div style="background: #FFF7E9; border: 3px solid #14171F; border-radius: 20px; box-shadow: 6px 6px 0 #F0A81E; padding: 26px;">
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 6px;">
+      <span style="background: #F0A81E; border: 2px solid #14171F; border-radius: 999px; padding: 4px 12px; font: 700 15px Assistant;">עדיפות 1</span>
+      <h2 style="font-family: 'Secular One', sans-serif; font-size: 30px; margin: 0;">לופּ-X · הרובוט</h2>
+      <span style="font: 500 15px Heebo; direction: ltr; color: #6B6355;">char_loop_* · 8 תנוחות · 384×512</span>
+    </div>
+    <p style="font-size: 17px; line-height: 1.55; margin: 0 0 16px; color: #3A3630; max-width: 88ch;">הדמות הכי חשובה במשחק — היא מופיעה בכל 23 הקרבות. לופּ מבצע את הבקשה <strong>בדיוק כפי שנכתבה</strong>, וכך חושף מה היה חסר. הוא לעולם לא מאשים את הילד ולעולם לא נראה מאיים או עצוב־נכלם.</p>
+
+    <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; padding: 16px; font: 400 15px/1.7 Heebo, monospace; direction: ltr; text-align: left; margin-bottom: 16px;">
+      [STYLE BLOCK] A friendly helper robot named Loop-X. Rounded boxy body like a cheerful appliance, matte cream white casing #FFF7E9 with cobalt blue panels #1E4FD8 and one warm gold accent ring #F0A81E on the chest. Wide single visor screen face showing two simple glowing dot eyes, no mouth. Short segmented arms with soft three-finger mitten hands. Small treaded roller base instead of legs. One thin antenna with a gold tip. Reads as capable and literal-minded, never scary, never sad. POSE: standing calm and attentive, arms relaxed at sides, eyes as two neutral round dots, waiting for instructions.
+    </div>
+
+    <div style="font: 700 18px Assistant; margin-bottom: 10px;">החליפו את שורת ה־<span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">POSE</span> בכל אחת מאלה:</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 10px;">
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">char_loop_idle</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">standing calm and attentive, arms relaxed, eyes two neutral round dots, waiting for instructions</div></div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">char_loop_scan</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">leaning slightly forward, one hand raised beside the visor, eyes narrowed into two horizontal scanning lines, examining something ahead</div></div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">char_loop_build</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">both hands held in front assembling three small blank floating blocks, eyes as two focused dots, concentrating on the task</div></div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">char_loop_launch</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">one arm extended forward with an open palm pushing something away, body tilted into the motion, eyes bright and wide, dispatching a task</div></div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">char_loop_confused</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">head tilted to one side, both palms turned upward in a small shrug, eyes as two uneven dots, politely puzzled but not upset</div></div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">char_loop_partial</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">standing beside a small half-finished blank structure, one hand gesturing toward it, eyes as two calm dots, presenting an incomplete result without shame</div></div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #A85C00; margin-bottom: 5px;">char_loop_safety</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">both arms crossed in front of the chest in a calm protective stop gesture, eyes as two steady dots, a mustard yellow shield shape glowing softly on the chest panel, protective and reassuring, absolutely not alarmed or panicked</div></div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">char_loop_victory</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">both arms raised in a small cheerful celebration, roller base lifted slightly off the ground, eyes as two happy curved arcs, delighted</div></div>
+    </div>
+
+    <div style="background: #E7EDFD; border: 2px solid #1E4FD8; border-radius: 14px; padding: 14px 16px; margin-top: 16px; font-size: 16px; line-height: 1.6; color: #17369B;">
+      <strong>קריטי לסדנה:</strong> לופּ לובש קוסמטיקה בארבעה חריצים (ראש, שריון, תנועה, סמל). לכן <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">char_loop_idle</span> צריך גם גרסה עם <strong>ראש חשוף בלי אנטנה</strong> — כדי שכובע או קסדה יוכלו להתלבש עליו בלי להתנגש. בקשו אותה בשם <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">char_loop_idle_bare</span>.
+    </div>
+  </div>
+
+  <!-- HERO / HEROINE -->
+  <div style="background: #FFF7E9; border: 3px solid #14171F; border-radius: 20px; box-shadow: 6px 6px 0 #F0A81E; padding: 26px;">
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 6px;">
+      <span style="background: #F0A81E; border: 2px solid #14171F; border-radius: 999px; padding: 4px 12px; font: 700 15px Assistant;">עדיפות 1</span>
+      <h2 style="font-family: 'Secular One', sans-serif; font-size: 30px; margin: 0;">הגיבור והגיבורה</h2>
+      <span style="font: 500 15px Heebo; direction: ltr; color: #6B6355;">char_hero_* · char_heroine_* · 5+5 · 512×640</span>
+    </div>
+    <p style="font-size: 17px; line-height: 1.55; margin: 0 0 16px; color: #3A3630; max-width: 88ch;">שתי אפשרויות שוות לחלוטין ביכולת ובמעמד. מדים של סוכנות — לא זהות אישית. גיל נראה 12–13, ללא שם וללא התאמה אישית.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 16px; margin-bottom: 16px;">
+      <div>
+        <div style="font: 700 18px Assistant; margin-bottom: 8px;">גיבור · <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block; font-size: 15px;">char_hero_idle</span></div>
+        <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; padding: 15px; font: 400 15px/1.7 Heebo, monospace; direction: ltr; text-align: left;">
+          [STYLE BLOCK] A confident 12 year old boy agent of a technology agency. Short dark hair. Cream white field jacket #FFF7E9 with cobalt blue #1E4FD8 shoulder panels and a small gold circular agency emblem on the chest. Slate grey utility trousers, sturdy boots. A slim blank tablet clipped at the hip. Warm mid tone skin. Cheerful, competent, curious expression. Neutral uniform, no personal jewelry, no name tag. POSE: standing relaxed and confident, one hand resting on the hip, smiling calmly.
+        </div>
+      </div>
+      <div>
+        <div style="font: 700 18px Assistant; margin-bottom: 8px;">גיבורה · <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block; font-size: 15px;">char_heroine_idle</span></div>
+        <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; padding: 15px; font: 400 15px/1.7 Heebo, monospace; direction: ltr; text-align: left;">
+          [STYLE BLOCK] A confident 12 year old girl agent of a technology agency. Dark hair in a practical high ponytail. Cream white field jacket #FFF7E9 with cobalt blue #1E4FD8 shoulder panels and a small gold circular agency emblem on the chest. Slate grey utility trousers, sturdy boots. A slim blank tablet clipped at the hip. Warm mid tone skin. Cheerful, competent, curious expression. Neutral uniform, no personal jewelry, no name tag. POSE: standing relaxed and confident, one hand resting on the hip, smiling calmly.
+        </div>
+      </div>
+    </div>
+
+    <div style="font: 700 18px Assistant; margin-bottom: 10px;">חמש התנוחות · זהות לשתי הדמויות</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 10px;">
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">_idle</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">standing relaxed and confident, one hand on the hip, smiling calmly</div></div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">_selected</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">stepping forward with a small confident nod, one thumb up, ready to start</div></div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">_map</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">seen from a slight distance, holding the blank tablet in both hands and looking ahead at a route, small and simple enough to read at 56 pixels</div></div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">_victory</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">one fist raised in a happy small cheer, other hand at the side, bright joyful expression</div></div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">_certificate</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">holding a completely blank cream certificate scroll in both hands at chest height, proud calm smile, the scroll must have absolutely no writing on it</div></div>
+    </div>
+  </div>
+
+  <!-- ALEPH -->
+  <div style="background: #FFF7E9; border: 2px solid #14171F; border-radius: 20px; box-shadow: 6px 6px 0 #14171F; padding: 26px;">
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 6px;">
+      <span style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; padding: 4px 12px; font: 700 15px Assistant;">עדיפות 2</span>
+      <h2 style="font-family: 'Secular One', sans-serif; font-size: 30px; margin: 0;">מפקדת אלף</h2>
+      <span style="font: 500 15px Heebo; direction: ltr; color: #6B6355;">char_aleph_* · 4 תנוחות · 336×448</span>
+    </div>
+    <p style="font-size: 17px; line-height: 1.55; margin: 0 0 16px; color: #3A3630; max-width: 88ch;">המנטורית. נכנסת מלמטה־ימין כשכבת תדריך, לא כדמות בבמה. כשירה וחמה, מדברת משפט אחד. היא נותנת רמז — היא לא פותרת במקום הילד.</p>
+
+    <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; padding: 16px; font: 400 15px/1.7 Heebo, monospace; direction: ltr; text-align: left; margin-bottom: 16px;">
+      [STYLE BLOCK] A calm competent woman mission commander in her late thirties, mentor figure. Dark hair pulled back neatly. Deep ink navy #14171F commander coat with gold #F0A81E trim at the collar and cuffs, cream white shirt underneath. A small gold circular agency emblem at the collar. Warm mid tone skin. Steady reassuring expression, direct but kind, never stern, never intimidating. Half body to knees is acceptable for this character. POSE: standing calmly with arms folded, giving a short briefing, warm attentive expression.
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 10px;">
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">char_aleph_neutral</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">standing calmly with arms folded, warm attentive expression</div></div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">char_aleph_briefing</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">one open hand gesturing outward as if explaining a mission, engaged and clear</div></div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">char_aleph_hint</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">leaning in slightly with one index finger raised in a helpful pointing gesture, encouraging expression, offering a clue rather than an answer</div></div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #0B5A40; margin-bottom: 5px;">char_aleph_celebration</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">applauding with a genuine proud smile</div></div>
+    </div>
+  </div>
+
+  <!-- VILLAINS -->
+  <div style="background: #FFF7E9; border: 2px solid #14171F; border-radius: 20px; box-shadow: 6px 6px 0 #14171F; padding: 26px;">
+    <h2 style="font-family: 'Secular One', sans-serif; font-size: 30px; margin: 0 0 6px;">חמשת הנבלים</h2>
+    <p style="font-size: 17px; line-height: 1.55; margin: 0 0 18px; color: #3A3630; max-width: 88ch;">כל נבל מנצל <strong>כשל בכתיבת הבקשה</strong> — הוא לא משתלט על לופּ ולא הופך את ה־AI לרע. ביטחון מופרז בלי איום. ההומור מכוון לנבל, לא לילד.</p>
+
+    <div style="background: #FFF0D6; border: 2px solid #A85C00; border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; font-size: 16px; line-height: 1.6; color: #6B3B00;">
+      <strong>שורת התבוסה · זהה לכל החמישה.</strong> הדביקו אותה כתנוחת <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">_defeat_exit</span>:
+      <div style="background: #FFF7E9; border-radius: 10px; padding: 12px; margin-top: 10px; font: 400 14px/1.65 Heebo, monospace; direction: ltr; text-align: left; color: #14171F;">POSE: calmly packing their own props into a bag and turning to walk away, mildly impressed and good humored about being outsmarted. Absolutely no defeat, no falling, no humiliation, no anger, no damage. Order is being restored, not a battle being lost.</div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+
+      <div style="background: #EAEDF5; border: 2px solid #4A5B7E; border-radius: 16px; padding: 18px;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+          <span style="background: #F0A81E; border: 2px solid #14171F; border-radius: 999px; padding: 3px 11px; font: 700 14px Assistant;">עדיפות 1</span>
+          <span style="font-family: 'Secular One', sans-serif; font-size: 22px;">מר בערך</span>
+          <span style="font: 500 14px Heebo; direction: ltr; color: #4A5B7E;">char_bearach_* · רובע הערפל · קרבות 02–07</span>
+        </div>
+        <div style="font-size: 16px; line-height: 1.55; color: #3A3630; margin-bottom: 12px;">מוחק מטרה, קהל ופורמט. הכל אצלו ״בערך״ ואף פעם לא מדויק.</div>
+        <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 14px; font: 400 15px/1.7 Heebo, monospace; direction: ltr; text-align: left;">
+          [STYLE BLOCK] A comic villain called Mr Approximately. A tall lanky man in a rumpled slate blue grey #4A5B7E trench coat that is slightly too long, collar turned up. A soft wide brimmed hat pulled low so his eyes are half hidden. Everything about him is deliberately vague and unfinished: fraying hems, one sleeve longer than the other, mismatched buttons, a slightly blurry soft edged silhouette. He carries a bundle of small blank signboards under one arm, all completely blank with no writing. Wisps of pale fog cling around his ankles. Smug, unbothered, faintly amused expression. Mischievous, absolutely not menacing. POSE: standing with a lazy shrug, one hand vaguely gesturing off to the side as if directions do not really matter.
+        </div>
+      </div>
+
+      <div style="background: #FDEBDB; border: 2px solid #B8480C; border-radius: 16px; padding: 18px;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+          <span style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; padding: 3px 11px; font: 700 14px Assistant;">עדיפות 2</span>
+          <span style="font-family: 'Secular One', sans-serif; font-size: 22px;">עוד־ועוד</span>
+          <span style="font: 500 14px Heebo; direction: ltr; color: #B8480C;">char_odveod_* · מפעל בלי גבולות · קרבות 08–13</span>
+        </div>
+        <div style="font-size: 16px; line-height: 1.55; color: #3A3630; margin-bottom: 12px;">מייצר בלי לעצור, כי אף אחד לא אמר לו מתי להפסיק. גדש קומי.</div>
+        <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 14px; font: 400 15px/1.7 Heebo, monospace; direction: ltr; text-align: left;">
+          [STYLE BLOCK] A comic villain called More And More. A short round enthusiastic factory foreman in burnt orange #B8480C overalls with far too many bulging pockets, a small hard hat, and thick round goggles. He has four arms instead of two, each holding an identical plain blank crate, and more identical crates are stacked precariously on his shoulders and head. Beaming, over eager, delighted by quantity, completely unable to stop producing. Comically excessive, cheerful, absolutely not threatening. POSE: mid stride carrying too many identical crates, grinning proudly, one crate tipping.
+        </div>
+      </div>
+
+      <div style="background: #F0E9FB; border: 2px solid #6A3FA8; border-radius: 16px; padding: 18px;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+          <span style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; padding: 3px 11px; font: 700 14px Assistant;">עדיפות 3</span>
+          <span style="font-family: 'Secular One', sans-serif; font-size: 22px;">תסבוכת</span>
+          <span style="font: 500 14px Heebo; direction: ltr; color: #6A3FA8;">char_tangle_* · מבוך הפקודות · קרבות 14–18</span>
+        </div>
+        <div style="font-size: 16px; line-height: 1.55; color: #3A3630; margin-bottom: 12px;">מחליפה סדר, מערבבת תוויות ומקשרת קשרים — תמיד הפיכים.</div>
+        <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 14px; font: 400 15px/1.7 Heebo, monospace; direction: ltr; text-align: left;">
+          [STYLE BLOCK] A comic villain called Tangle. A wiry acrobatic woman in a deep violet #6A3FA8 bodysuit with a criss cross lattice pattern. Long dark hair braided into several strands that loop and knot in the air around her. She holds loose bundles of coloured ribbon and cord, some tied into loose reversible bows, and small completely blank luggage tags dangle from them. Playful trickster energy, delighted by mix ups, mischievous rather than cruel. Absolutely not threatening. POSE: crouching lightly on one knee, hands crossing two cords in front of her, grinning at her own knot.
+        </div>
+      </div>
+
+      <div style="background: #E1F2F2; border: 2px solid #0F6E6E; border-radius: 16px; padding: 18px;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+          <span style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; padding: 3px 11px; font: 700 14px Assistant;">עדיפות 3</span>
+          <span style="font-family: 'Secular One', sans-serif; font-size: 22px;">ד״ר ודאות</span>
+          <span style="font: 500 14px Heebo; direction: ltr; color: #0F6E6E;">char_certainty_* · מגדל הוודאות · קרבות 19–22</span>
+        </div>
+        <div style="font-size: 16px; line-height: 1.55; color: #3A3630; margin-bottom: 12px;">בטוח בעצמו לחלוטין — וללא מקור. הביטחון שלו נשמע משכנע ולא ניתן לבדיקה.</div>
+        <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 14px; font: 400 15px/1.7 Heebo, monospace; direction: ltr; text-align: left;">
+          [STYLE BLOCK] A comic villain called Doctor Certainty. An impeccably groomed man in a polished deep teal #0F6E6E academic suit with a mirror bright lapel, a high stiff collar and a neat pocket square. Silver grey hair, immaculate. He holds a completely blank framed certificate under one arm and a large official looking rubber stamp in the other hand. Several blank seals and ribbons hang from his jacket. Utterly self assured, faintly theatrical, presenting himself as an authority. Confident and slightly pompous, absolutely not threatening. POSE: standing straight with the blank certificate held out for display, chin slightly raised, supremely confident smile.
+        </div>
+      </div>
+
+      <div style="background: #F4EAD6; border: 3px solid #14171F; border-radius: 16px; padding: 18px;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+          <span style="background: #F0A81E; border: 2px solid #14171F; border-radius: 999px; padding: 3px 11px; font: 700 14px Assistant;">גמר</span>
+          <span style="font-family: 'Secular One', sans-serif; font-size: 22px;">המשבש</span>
+          <span style="font: 500 14px Heebo; direction: ltr; color: #14171F;">char_mashbesh_* · קרב 23 · 3 תנוחות</span>
+        </div>
+        <div style="font-size: 16px; line-height: 1.55; color: #3A3630; margin-bottom: 12px;">רמיקס מרוסן של שלושת הנבלים הקודמים. אי־סדר שניתן לסדר — לא חורבן ולא אפלה.</div>
+        <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 14px; font: 400 15px/1.7 Heebo, monospace; direction: ltr; text-align: left;">
+          [STYLE BLOCK] A comic villain called The Disruptor, the finale antagonist. A theatrical ringmaster figure in a patchwork coat stitched together from three fabrics: slate blue grey fog cloth, burnt orange conveyor canvas and deep violet lattice weave, over an ink black waistcoat with gold #F0A81E buttons. A tall slightly crooked top hat. He juggles several small completely blank cards and tiles in the air around him. Charismatic showman energy, mischievous and playful, enjoying the confusion he creates. Bright and comic, absolutely no darkness, no horror, no destruction, no menace. POSE: mid flourish with arms spread wide, blank cards suspended in the air around him, theatrical grin.
+        </div>
+        <div style="font: 700 17px Assistant; margin: 14px 0 10px;">שלוש התנוחות של המשבש</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 10px;">
+          <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;">
+            <div style="font: 500 14px Heebo; direction: ltr; color: #6B3B00; margin-bottom: 5px;">char_mashbesh_idle</div>
+            <div style="font-size: 15px; line-height: 1.55; color: #3A3630;">התנוחה שבפרומפט הבסיס שלמעלה.</div>
+          </div>
+          <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;">
+            <div style="font: 500 14px Heebo; direction: ltr; color: #6B3B00; margin-bottom: 5px;">char_mashbesh_unverified_offer</div>
+            <div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">leaning in confidentially, offering a single blank card with a persuasive wink, as if suggesting something that was never in the official guide</div>
+          </div>
+          <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 12px;">
+            <div style="font: 500 14px Heebo; direction: ltr; color: #6B3B00; margin-bottom: 5px;">char_mashbesh_defeat</div>
+            <div style="font-size: 15px; line-height: 1.55; color: #3A3630;">שורת התבוסה המשותפת שלמעלה.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; padding: 16px; margin-top: 18px;">
+      <div style="font: 700 18px Assistant; margin-bottom: 10px;">ארבע התנוחות · זהות לארבעת נבלי האזורים</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 10px;">
+        <div style="background: #F4EAD6; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #6B3B00; margin-bottom: 5px;">_idle</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">התנוחה שבפרומפט הבסיס</div></div>
+        <div style="background: #F4EAD6; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #6B3B00; margin-bottom: 5px;">_action</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">mid gesture actively causing their signature mischief, leaning into the motion, delighted with themselves</div></div>
+        <div style="background: #F4EAD6; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #6B3B00; margin-bottom: 5px;">_reaction</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">taken aback with raised eyebrows, one hand half lifted, comically surprised that the request was precise this time</div></div>
+        <div style="background: #F4EAD6; border-radius: 12px; padding: 12px;"><div style="font: 500 14px Heebo; direction: ltr; color: #6B3B00; margin-bottom: 5px;">_defeat_exit</div><div style="font: 400 14px/1.6 Heebo, monospace; direction: ltr; text-align: left;">שורת התבוסה המשותפת שלמעלה</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div style="background: #14171F; color: #FFF7E9; border-radius: 20px; padding: 26px 28px;">
+    <div style="font-family: 'Secular One', sans-serif; font-size: 22px; color: #F0A81E; margin-bottom: 14px;">בדיקה לפני שאתם שולחים לי תמונה</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; font-size: 16px; line-height: 1.7;">
+      <div>
+        <strong style="color: #F0A81E; display: block; margin-bottom: 5px;">רקע</strong>שקוף לגמרי. אם יצא רקע לבן או מרובע שחמט — הריצו שוב עם <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">transparent background, PNG</span> בסוף.
+      </div>
+      <div>
+        <strong style="color: #F0A81E; display: block; margin-bottom: 5px;">טקסט</strong>אפס אותיות בתמונה. שלטים, תעודות, קלפים וקרטונים — ריקים לחלוטין. כל טקסט במשחק הוא UI חי.
+      </div>
+      <div>
+        <strong style="color: #F0A81E; display: block; margin-bottom: 5px;">קריאות</strong>הקטינו ל־96px. אם הדמות מתמסמסת — צריך קו עבה יותר ופחות פרטים.
+      </div>
+      <div>
+        <strong style="color: #F0A81E; display: block; margin-bottom: 5px;">קו וצל</strong>קו דיו שחור אחיד. בלי צל מטושטש, בלי זוהר, בלי גרדיאנט.
+      </div>
+      <div>
+        <strong style="color: #F0A81E; display: block; margin-bottom: 5px;">בטיחות</strong>בלי נשק, אש, עשן, פגיעה או מבט מאיים. הנבל שובב, לא מפחיד.
+      </div>
+      <div>
+        <strong style="color: #F0A81E; display: block; margin-bottom: 5px;">שם קובץ</strong>בדיוק ה־assetId שכתוב כאן. הקוד מחפש את השם הזה.
+      </div>
+    </div>
+  </div>
+
+</section>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1500,&quot;height&quot;:1100}}"></script>
+</body>
+</html>

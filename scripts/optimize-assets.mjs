@@ -26,9 +26,14 @@ function detectBorderPalette(data, width, height, channels) {
     const key = `${bucket(data[o])},${bucket(data[o + 1])},${bucket(data[o + 2])}`;
     counts.set(key, (counts.get(key) || 0) + 1);
   };
-  for (let x = 0; x < width; x += 2) { add(x, 0); add(x, height - 1); }
-  for (let y = 0; y < height; y += 2) { add(0, y); add(width - 1, y); }
-  return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 2).map(([key]) => key.split(',').map(Number));
+  // Sample a thin band near each edge (not just the single edge pixel) so a
+  // soft drop-shadow/gradient right at the border is captured too, and keep
+  // the top 4 clusters rather than 2 to cover checker duos with more than
+  // one shade pair (some sources dither the checker across a small range).
+  const band = Math.max(1, Math.round(height * 0.02));
+  for (let x = 0; x < width; x += 2) { for (let b = 0; b < band; b++) { add(x, b); add(x, height - 1 - b); } }
+  for (let y = 0; y < height; y += 2) { for (let b = 0; b < band; b++) { add(b, y); add(width - 1 - b, y); } }
+  return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([key]) => key.split(',').map(Number));
 }
 
 const CHECKER_TOLERANCE = 75;
@@ -72,9 +77,35 @@ async function removeCheckerboardBackground(inputPath) {
   return sharp(data, { raw: { width, height, channels } });
 }
 
+// A few source renders carry a stray filename watermark (e.g. "char_loop_map")
+// baked into the bottom margin, below the character's feet — see
+// docs/handoff/assets/ASSETS_README.md "Baked-in English text". Blanking a
+// fixed bottom band erases it without touching the character artwork above.
+const WATERMARK_BOTTOM_FRACTIONS = {
+  char_heroine_map: 0.06,
+  char_heroine_certificate: 0.06,
+  char_hero_certificate: 0.06,
+};
+
+async function eraseBottomWatermark(pipeline, fraction) {
+  const { data, info } = await pipeline.ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { width, height, channels } = info;
+  const cutoff = Math.round(height * (1 - fraction));
+  for (let y = cutoff; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      data[(y * width + x) * channels + 3] = 0;
+    }
+  }
+  return sharp(data, { raw: { width, height, channels } });
+}
+
 await Promise.all(files.map(async (name) => {
-  const output = join(target, `${parse(name).name}.webp`);
-  const cleaned = await removeCheckerboardBackground(join(source, name));
+  const baseName = parse(name).name;
+  const output = join(target, `${baseName}.webp`);
+  let cleaned = await removeCheckerboardBackground(join(source, name));
+  if (WATERMARK_BOTTOM_FRACTIONS[baseName]) {
+    cleaned = await eraseBottomWatermark(cleaned, WATERMARK_BOTTOM_FRACTIONS[baseName]);
+  }
   await cleaned.resize({ width: 900, withoutEnlargement: true }).webp({ quality: 82, effort: 5 }).toFile(output);
 }));
 console.log(`Optimized ${files.length} character assets.`);

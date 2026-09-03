@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Secular+One&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #ECE7DC; }
+  * { box-sizing: border-box; }
+  a { color: #1E4FD8; }
+  a:hover { color: #14171F; }
+</style>
+</helmet>
+
+<div dir="rtl" style="font-family: Assistant, system-ui, sans-serif; color: #14171F; padding: 40px 40px 120px; direction: rtl;">
+<section style="max-width: 1900px; margin: 0 auto; display: flex; flex-direction: column; gap: 36px;">
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div style="font-family: 'Secular One', sans-serif; font-size: 13px; letter-spacing: .12em; color: #6B6355;">סוכנות גיבורי ה־AI · פלטפורמה מלאה · v2</div>
+    <h1 style="font-family: 'Secular One', sans-serif; font-size: 44px; line-height: 1.1; margin: 0;">12 · מעטפת הקרב ושבע התבניות</h1>
+    <p style="font-size: 18px; line-height: 1.55; max-width: 86ch; margin: 0; color: #3A3630; text-wrap: pretty;">מסכים <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">S17–S30</span> הם מעטפת אחת שכל 23 הקרבות עוברים בה. שבע התבניות מחליפות רק את <strong>אזור העבודה</strong> — הכותרת, הבמה, המשוב, העזרה והניקוד זהים תמיד.</p>
+  </div>
+
+  <div style="background: #14171F; color: #FFF7E9; border-radius: 20px; padding: 26px 28px;">
+    <div style="font-family: 'Secular One', sans-serif; font-size: 22px; color: #F0A81E; margin-bottom: 14px;">אנטומיית המעטפת · חמש שכבות קבועות</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; font-size: 16px; line-height: 1.6;">
+      <div><strong style="color: #F0A81E; display: block; margin-bottom: 4px;">1 · סרגל קרב</strong>מספר קרב, שם, יציאה למפה, השתקה. גובה 56.</div>
+      <div><strong style="color: #F0A81E; display: block; margin-bottom: 4px;">2 · במת העולם</strong>לופּ בימין, נבל בשמאל, תוצאה במרכז. 40% מהגובה, לא פחות מ־210px.</div>
+      <div><strong style="color: #F0A81E; display: block; margin-bottom: 4px;">3 · הוראה</strong>משפט אחד, עד 12 מילים, 19px, מיושר לימין.</div>
+      <div><strong style="color: #F0A81E; display: block; margin-bottom: 4px;">4 · אזור העבודה</strong>החלק היחיד שמשתנה בין שבע התבניות.</div>
+      <div><strong style="color: #F0A81E; display: block; margin-bottom: 4px;">5 · סרגל פעולה</strong>CTA יחיד + ״מה זה אומר?״. דביק, מעל safe-area.</div>
+    </div>
+  </div>
+
+  <!-- ================= SHELL STATES ================= -->
+  <div style="background: #FFF7E9; border: 2px solid #14171F; border-radius: 20px; box-shadow: 6px 6px 0 #14171F; padding: 28px;">
+    <h2 style="font-family: 'Secular One', sans-serif; font-size: 30px; margin: 0 0 6px;">מעטפת הקרב · <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block; font-size: 26px;">S17–S30</span></h2>
+    <p style="margin: 0 0 24px; font-size: 17px; line-height: 1.55; color: #3A3630; max-width: 86ch;">הרצף מודגם על קרב <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">03</span> (״היכן אנחנו?״, רובע הערפל) כדי שכל מצב יהיה נבדק מול תוכן מאושר אמיתי ולא מול טקסט דמה.</p>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 30px; align-items: flex-start;">
+
+      <!-- S17 -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 999px; padding: 4px 9px;">S17</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">פאנל נבל</span></div>
+        <div style="width: 372px; height: 660px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: #FFF7E9;">
+            <button aria-label="יציאה למפה" style="width: 40px; height: 40px; background: #FFFFFF; border: 2px solid #14171F; border-radius: 11px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#14171F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></button>
+            <div style="flex: 1;"><div style="font: 700 16px Assistant; line-height: 1.15;">היכן אנחנו?</div><div style="font: 500 14px Heebo; direction: ltr; color: #6B6355;">03 / 23</div></div>
+            <button aria-label="השתקה" style="width: 40px; height: 40px; background: #F4EAD6; border: 2px solid #14171F; border-radius: 11px; flex: none; cursor: pointer;"></button>
+          </div>
+          <div style="height: 264px; background: #EAEDF5; border-bottom: 2px solid #14171F; background-image: repeating-linear-gradient(115deg, rgba(74,91,126,.20) 0 3px, transparent 3px 18px); position: relative; display: flex; align-items: flex-end; justify-content: space-between; padding: 12px;">
+            <div style="width: 84px; height: 130px; border: 2px dashed #94897A; border-radius: 12px; background: rgba(255,255,255,.72); display: flex; align-items: center; justify-content: center; font: 500 12px Heebo; direction: ltr; color: #6B6355; text-align: center;">loop<br>idle</div>
+            <div style="width: 94px; height: 142px; border: 2px dashed #4A5B7E; border-radius: 12px; background: rgba(74,91,126,.16); display: flex; align-items: center; justify-content: center; font: 500 12px Heebo; direction: ltr; color: #4A5B7E; text-align: center;">bearach<br>action</div>
+            <div style="position: absolute; top: 12px; inset-inline-start: 12px; inset-inline-end: 96px; background: #FFFFFF; border: 3px solid #14171F; border-radius: 16px; padding: 10px 12px; font-size: 16px; line-height: 1.45;">״מקום? זמן? בערך זה מספיק.״</div>
+          </div>
+          <div style="flex: 1; padding: 14px 14px 0; display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; background: #4A5B7E; color: #FFFFFF; border-radius: 999px; padding: 4px 11px; font: 700 15px Assistant;">מר בערך · רובע הערפל</div>
+            <h1 style="font-family: 'Secular One', sans-serif; font-size: 22px; margin: 0; line-height: 1.25;">מר בערך מחק את המקום והזמן מהבקשה</h1>
+            <p style="font-size: 17px; line-height: 1.55; margin: 0; color: #3A3630;">סיור המפות מתחיל בערב. לופּ הפעיל תאורה צבעונית שמסתירה את סימוני המפה.</p>
+          </div>
+          <div style="padding: 12px 14px; border-top: 2px solid #14171F;"><button style="width: 100%; min-height: 52px; background: #1E4FD8; color: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; box-shadow: 4px 4px 0 #14171F; font: 700 18px Assistant; cursor: pointer;">המשך</button></div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;">10 שניות. הנבל מדבר משפט אחד. כפתור אחד.</div>
+      </div>
+
+      <!-- S18+S19 -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 999px; padding: 4px 9px;">S18+S19</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">מטרה וסריקה</span></div>
+        <div style="width: 372px; height: 660px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; gap: 8px; padding: 0 12px;">
+            <button aria-label="יציאה למפה" style="width: 40px; height: 40px; background: #FFFFFF; border: 2px solid #14171F; border-radius: 11px; flex: none; cursor: pointer;"></button>
+            <div style="flex: 1;"><div style="font: 700 16px Assistant; line-height: 1.15;">היכן אנחנו?</div><div style="font: 500 14px Heebo; direction: ltr; color: #6B6355;">03 / 23</div></div>
+            <button aria-label="השתקה" style="width: 40px; height: 40px; background: #F4EAD6; border: 2px solid #14171F; border-radius: 11px; flex: none; cursor: pointer;"></button>
+          </div>
+          <div style="height: 212px; background: #EAEDF5; border-bottom: 2px solid #14171F; background-image: repeating-linear-gradient(115deg, rgba(74,91,126,.20) 0 3px, transparent 3px 18px); display: flex; align-items: center; justify-content: center; padding: 12px; position: relative;">
+            <div style="width: 100%; height: 100%; border: 3px dashed #4A5B7E; border-radius: 14px; background: rgba(255,255,255,.55); display: flex; align-items: center; justify-content: center; font: 500 13px Heebo; direction: ltr; color: #4A5B7E; text-align: center;">bg_b03_fog_street_map<br>+ colored_lights</div>
+            <span style="position: absolute; top: 10px; inset-inline-end: 10px; background: #14171F; color: #FFF7E9; border-radius: 999px; padding: 4px 10px; font: 700 14px Assistant;">סורק</span>
+          </div>
+          <div style="flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 12px; overflow: hidden;">
+            <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; padding: 12px;">
+              <div style="font: 700 15px Assistant; color: #6B6355; margin-bottom: 4px;">המטרה</div>
+              <div style="font-size: 17px; line-height: 1.5;">להגדיר תאורה לקריאת מפות בחוץ בערב.</div>
+            </div>
+            <div style="font: 700 19px Assistant; line-height: 1.45;">איזה סוג הקשר חסר?</div>
+            <div style="display: flex; flex-direction: column; gap: 9px;">
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; box-shadow: 3px 3px 0 #14171F; padding: 13px; min-height: 56px; font: 400 17px Assistant; cursor: pointer; display: flex; align-items: center; gap: 9px;"><span style="width: 22px; height: 22px; border: 2px solid #14171F; border-radius: 999px; flex: none;"></span>איפה ומתי</button>
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; box-shadow: 3px 3px 0 #14171F; padding: 13px; min-height: 56px; font: 400 17px Assistant; cursor: pointer; display: flex; align-items: center; gap: 9px;"><span style="width: 22px; height: 22px; border: 2px solid #14171F; border-radius: 999px; flex: none;"></span>למי מיועד הסיור</button>
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; box-shadow: 3px 3px 0 #14171F; padding: 13px; min-height: 56px; font: 400 17px Assistant; cursor: pointer; display: flex; align-items: center; gap: 9px;"><span style="width: 22px; height: 22px; border: 2px solid #14171F; border-radius: 999px; flex: none;"></span>איך להציג את התשובה</button>
+            </div>
+          </div>
+          <div style="padding: 12px 14px; border-top: 2px solid #14171F; display: flex; gap: 10px; align-items: center;">
+            <button style="flex: 1; min-height: 52px; background: #ECE7DC; color: #6B6355; border: 2px dashed #94897A; border-radius: 999px; font: 700 17px Assistant;">בחרו אפשרות</button>
+            <button style="min-height: 52px; background: transparent; border: none; border-bottom: 2px solid #1E4FD8; color: #1E4FD8; font: 700 16px Assistant; cursor: pointer;">מה זה אומר?</button>
+          </div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;">כרטיס המטרה נשאר גלוי בכל השלבים — הוא לא נעלם אחרי קריאה אחת.</div>
+      </div>
+
+      <!-- S20 -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 999px; padding: 4px 9px;">S20</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">אזור בניית הפרומפט</span></div>
+        <div style="width: 372px; height: 660px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; gap: 8px; padding: 0 12px;">
+            <button aria-label="יציאה למפה" style="width: 40px; height: 40px; background: #FFFFFF; border: 2px solid #14171F; border-radius: 11px; flex: none; cursor: pointer;"></button>
+            <div style="flex: 1;"><div style="font: 700 16px Assistant; line-height: 1.15;">היכן אנחנו?</div><div style="font: 500 14px Heebo; direction: ltr; color: #6B6355;">03 / 23</div></div>
+            <span style="background: #E3F5EC; border: 2px solid #0F8A5F; border-radius: 999px; padding: 3px 9px; font: 700 14px Assistant; color: #0B5A40;">אובחן ✓</span>
+          </div>
+          <div style="height: 160px; background: #EAEDF5; border-bottom: 2px solid #14171F; background-image: repeating-linear-gradient(115deg, rgba(74,91,126,.20) 0 3px, transparent 3px 18px); display: flex; align-items: flex-end; padding: 10px;">
+            <div style="width: 66px; height: 100px; border: 2px dashed #94897A; border-radius: 11px; background: rgba(255,255,255,.72); display: flex; align-items: center; justify-content: center; font: 500 12px Heebo; direction: ltr; color: #6B6355; text-align: center;">loop<br>build</div>
+          </div>
+          <div style="flex: 1; padding: 13px; display: flex; flex-direction: column; gap: 11px; overflow: hidden;">
+            <div style="font: 700 19px Assistant; line-height: 1.4;">איפה ומתי מתקיים הסיור?</div>
+            <div style="background: #F4EAD6; border: 2px solid #14171F; border-radius: 14px; padding: 11px; display: flex; flex-direction: column; gap: 8px;">
+              <div style="font: 700 15px Assistant; color: #3A3630;">הפרומפט של לופּ</div>
+              <div style="background: #E3F5EC; border: 2px solid #0F8A5F; border-radius: 10px; padding: 9px 10px; display: flex; align-items: center; gap: 7px; font-size: 16px;"><span style="font: 700 13px Heebo; direction: ltr; background: #0B7350; color: #FFFFFF; border-radius: 5px; padding: 1px 6px;">1</span><span style="flex: 1;">הפעילו תאורה עבור הסיור</span><span style="font: 700 14px Assistant; color: #0B5A40;">מטרה ✓</span></div>
+              <div style="background: #FFFFFF; border: 3px dashed #1E4FD8; border-radius: 10px; padding: 12px 10px; display: flex; align-items: center; gap: 7px; font-size: 16px;"><span style="font: 700 13px Heebo; direction: ltr; background: #1E4FD8; color: #FFFFFF; border-radius: 5px; padding: 1px 6px;">2</span><span style="flex: 1; color: #17369B; font-weight: 700;">כאן חסר הקשר</span></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 13px; box-shadow: 3px 3px 0 #14171F; padding: 11px; min-height: 52px; font: 400 16px Assistant; cursor: pointer;"><strong>בתוך חדר בבוקר</strong><br><span style="color: #3A3630;">לקריאת מסמכים</span></button>
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 13px; box-shadow: 3px 3px 0 #14171F; padding: 11px; min-height: 52px; font: 400 16px Assistant; cursor: pointer;"><strong>באולם חשוך</strong><br><span style="color: #3A3630;">להצגה</span></button>
+              <button style="text-align: right; background: #E7EDFD; border: 3px solid #1E4FD8; border-radius: 13px; box-shadow: 3px 3px 0 #14171F; padding: 10px; min-height: 52px; font: 400 16px Assistant; cursor: pointer;"><strong>בחוץ בערב ✓ נבחר</strong><br><span style="color: #17369B;">לקריאת מפות</span></button>
+            </div>
+          </div>
+          <div style="padding: 12px 13px; border-top: 2px solid #14171F;"><button style="width: 100%; min-height: 52px; background: #1E4FD8; color: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; box-shadow: 4px 4px 0 #14171F; font: 700 18px Assistant; cursor: pointer;">שגרו את לופּ</button></div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;">הבמה מתכווצת ל־160 כשאזור העבודה פעיל — הפעולה תמיד נראית בלי גלילה.</div>
+      </div>
+
+      <!-- S21 -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 999px; padding: 4px 9px;">S21</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">שיגור</span></div>
+        <div style="width: 372px; height: 660px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; font: 700 16px Assistant;">היכן אנחנו?</div>
+          <div style="flex: 1; background: #EAEDF5; background-image: repeating-linear-gradient(115deg, rgba(74,91,126,.20) 0 3px, transparent 3px 18px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 24px;">
+            <div style="width: 108px; height: 158px; border: 3px dashed #94897A; border-radius: 14px; background: rgba(255,255,255,.8); display: flex; align-items: center; justify-content: center; font: 500 13px Heebo; direction: ltr; color: #6B6355; text-align: center;">loop<br>launch</div>
+            <div style="background: #FFFFFF; border: 3px solid #14171F; border-radius: 18px; box-shadow: 5px 5px 0 #14171F; padding: 16px; width: 100%;">
+              <div style="font: 700 19px Assistant; margin-bottom: 10px;">מעדכן מקום וזמן…</div>
+              <div style="height: 14px; background: #F4EAD6; border: 2px solid #14171F; border-radius: 999px; overflow: hidden;"><div style="width: 55%; height: 100%; background: #1E4FD8; margin-inline-start: auto;"></div></div>
+              <div style="font-size: 16px; color: #3A3630; margin-top: 10px; line-height: 1.5;">לופּ מבצע בדיוק את מה שכתוב בפרומפט.</div>
+            </div>
+          </div>
+          <div style="padding: 12px 14px; border-top: 2px solid #14171F;"><button style="width: 100%; min-height: 52px; background: #ECE7DC; color: #6B6355; border: 2px dashed #94897A; border-radius: 999px; font: 700 17px Assistant;">מחכה לתוצאה…</button></div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;">3 שניות בדיוק. הפוקוס עובר לכותרת התוצאה בסיום (A11Y-KEY-06).</div>
+      </div>
+
+      <!-- S22 -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 999px; padding: 4px 9px;">S22</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">תוצאת עולם · חלקית</span></div>
+        <div style="width: 372px; height: 660px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; font: 700 16px Assistant;">היכן אנחנו?</div>
+          <div style="height: 290px; background: #EAEDF5; border-bottom: 2px solid #14171F; background-image: repeating-linear-gradient(115deg, rgba(74,91,126,.20) 0 3px, transparent 3px 18px); display: flex; align-items: center; justify-content: center; padding: 12px; position: relative;">
+            <div style="width: 100%; height: 100%; border: 3px dashed #A85C00; border-radius: 14px; background: rgba(255,240,214,.6); display: flex; align-items: center; justify-content: center; font: 500 13px Heebo; direction: ltr; color: #A85C00; text-align: center;">char_loop_b03_stage_spot<br>static frame</div>
+            <span style="position: absolute; top: 10px; inset-inline-start: 10px; background: #A85C00; color: #FFFFFF; border-radius: 999px; padding: 4px 11px; font: 700 14px Assistant;">הצלחה חלקית</span>
+          </div>
+          <div style="flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 11px;">
+            <h1 style="font-family: 'Secular One', sans-serif; font-size: 22px; margin: 0; line-height: 1.25;">פינה אחת של המפה מוארת</h1>
+            <p style="font-size: 17px; line-height: 1.55; margin: 0; color: #3A3630;">רוב המסלול נשאר מוסתר. הסיור לא יכול לקרוא את המפה.</p>
+            <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 10px; font-size: 15px; display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: #3A3630;">מפתח תוצאה</span>
+              <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block; unicode-bidi: isolate;">b03_stage_lighting</span>
+            </div>
+          </div>
+          <div style="padding: 12px 14px; border-top: 2px solid #14171F;"><button style="width: 100%; min-height: 52px; background: #1E4FD8; color: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; box-shadow: 4px 4px 0 #14171F; font: 700 18px Assistant; cursor: pointer;">המשך</button></div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;">2–4 שניות. חזרה על אותה תוצאה מתקצרת ל־1.2 שניות (A11Y-MOT-04).</div>
+      </div>
+
+      <!-- S23+S24 -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 999px; padding: 4px 9px;">S23+S24</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">משוב וניסיון חוזר</span></div>
+        <div style="width: 372px; height: 660px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; gap: 8px;"><span style="font: 700 16px Assistant; flex: 1;">היכן אנחנו?</span><span style="font: 500 14px Heebo; direction: ltr; color: #6B6355;">ניסיון 2</span></div>
+          <div style="height: 130px; background: #EAEDF5; border-bottom: 2px solid #14171F; background-image: repeating-linear-gradient(115deg, rgba(74,91,126,.20) 0 3px, transparent 3px 18px); display: flex; align-items: flex-end; padding: 10px;">
+            <div style="width: 60px; height: 88px; border: 2px dashed #94897A; border-radius: 11px; background: rgba(255,255,255,.72); display: flex; align-items: center; justify-content: center; font: 500 11px Heebo; direction: ltr; color: #6B6355; text-align: center;">loop<br>partial</div>
+          </div>
+          <div style="flex: 1; padding: 13px; display: flex; flex-direction: column; gap: 11px; overflow: hidden;">
+            <div style="background: #FFF0D6; border: 2px solid #A85C00; border-radius: 14px; padding: 12px; display: flex; gap: 9px; align-items: flex-start;">
+              <span style="width: 26px; height: 26px; border: 2px solid #A85C00; border-radius: 999px; color: #A85C00; font: 700 16px Heebo; display: flex; align-items: center; justify-content: center; flex: none;">!</span>
+              <div style="font-size: 17px; line-height: 1.5; color: #14171F;"><strong style="display: block; margin-bottom: 2px;">תאורת במה מאירה נקודה אחת.</strong>הסיור צריך לראות את כל המסלול.</div>
+            </div>
+            <div style="background: #F4EAD6; border: 2px solid #14171F; border-radius: 14px; padding: 11px; display: flex; flex-direction: column; gap: 8px;">
+              <div style="font: 700 15px Assistant; color: #3A3630;">מה נשמר מהניסיון הקודם</div>
+              <div style="background: #E3F5EC; border: 2px solid #0F8A5F; border-radius: 10px; padding: 9px 10px; display: flex; align-items: center; gap: 7px; font-size: 16px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B7350" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M4.5 12.5l5 5L19.5 7"></path></svg>
+                <span style="flex: 1;">הפעילו תאורה עבור הסיור</span><span style="font: 700 14px Assistant; color: #0B5A40;">נכון — נשמר</span>
+              </div>
+              <div style="background: #E3F5EC; border: 2px solid #0F8A5F; border-radius: 10px; padding: 9px 10px; display: flex; align-items: center; gap: 7px; font-size: 16px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B7350" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M4.5 12.5l5 5L19.5 7"></path></svg>
+                <span style="flex: 1;">אבחון: איפה ומתי</span><span style="font: 700 14px Assistant; color: #0B5A40;">נכון — נשמר</span>
+              </div>
+              <div style="background: #FFFFFF; border: 3px dashed #1E4FD8; border-radius: 10px; padding: 11px 10px; font-size: 16px; color: #17369B; font-weight: 700;">רק ההקשר צריך שינוי</div>
+            </div>
+            <div style="font: 700 19px Assistant; line-height: 1.4;">נסו לבחור הקשר אחר בעצמכם.</div>
+          </div>
+          <div style="padding: 12px 13px; border-top: 2px solid #14171F; display: flex; gap: 9px;">
+            <button style="flex: 1; min-height: 52px; background: #FFF7E9; color: #A85C00; border: 2px solid #A85C00; border-radius: 999px; font: 700 17px Assistant; cursor: pointer;">נסו שוב</button>
+            <button style="min-height: 52px; background: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; font: 700 16px Assistant; padding: 0 15px; cursor: pointer;">עזרה</button>
+          </div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;">רכיב אחד חסר בכל פעם (A11Y-COG-03). כל מה שהיה נכון נשאר גלוי (A11Y-COG-02).</div>
+      </div>
+
+      <!-- S25 help ladder -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 999px; padding: 4px 9px;">S25</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">סולם עזרה · 6 שלבים</span></div>
+        <div style="width: 372px; height: 660px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; font: 700 16px Assistant;">היכן אנחנו?</div>
+          <div style="flex: 1; padding: 13px; display: flex; flex-direction: column; gap: 8px; overflow: hidden;">
+            <div style="font: 700 15px Assistant; color: #6B6355;">הסולם קבוע לכל 23 הקרבות</div>
+            <div style="background: #E3F5EC; border: 2px solid #0F8A5F; border-radius: 11px; padding: 9px 11px; font-size: 16px; line-height: 1.45;"><strong>1 ·</strong> ״התאורה עדיין לא מתאימה. נסו לשפר את ההקשר.״</div>
+            <div style="background: #E3F5EC; border: 2px solid #0F8A5F; border-radius: 11px; padding: 9px 11px; font-size: 16px; line-height: 1.45;"><strong>2 ·</strong> ״חסרים לנו המקום והזמן שבהם התאורה תפעל.״</div>
+            <div style="background: #E7EDFD; border: 3px solid #1E4FD8; border-radius: 11px; padding: 9px 11px; font-size: 16px; line-height: 1.45;"><strong>3 ·</strong> ״נסו לבחור הקשר אחר בעצמכם.״ <span style="display: block; font: 700 14px Assistant; color: #17369B; margin-top: 3px;">אתם כאן</span></div>
+            <div style="background: #FFFFFF; border: 2px dashed #94897A; border-radius: 11px; padding: 9px 11px; font-size: 16px; line-height: 1.45; color: #3A3630;"><strong>4 ·</strong> מסגרת סטטית + בדיוק שתי אפשרויות</div>
+            <div style="background: #FFFFFF; border: 2px dashed #94897A; border-radius: 11px; padding: 9px 11px; font-size: 16px; line-height: 1.45; color: #3A3630;"><strong>5 ·</strong> ״בחרו את האפשרות שמתאימה למפה בחוץ אחרי השקיעה.״</div>
+            <div style="background: #FFFFFF; border: 2px dashed #94897A; border-radius: 11px; padding: 9px 11px; font-size: 16px; line-height: 1.45; color: #3A3630;"><strong>6 ·</strong> שמירת החלקים הנכונים + השלמת החלק האחרון יחד</div>
+            <div style="background: #F4EAD6; border: 2px solid #14171F; border-radius: 11px; padding: 10px 11px; font-size: 16px; line-height: 1.5; margin-top: 2px;"><strong>השלמה מודרכת</strong> — הבנה החצי־פתוח מבטיח ניצחון והמשך.</div>
+            <div style="background: #FFF0D6; border: 2px solid #A85C00; border-radius: 11px; padding: 10px 11px; font-size: 16px; line-height: 1.5; color: #6B3B00;">הסולם <strong>לא</strong> מהבהב ו<strong>לא</strong> מוריד ניקוד לפי מספר ניסיונות (A11Y-COG-07).</div>
+          </div>
+          <div style="padding: 12px 13px; border-top: 2px solid #14171F; display: flex; gap: 9px;">
+            <button style="flex: 1; min-height: 52px; background: #1E4FD8; color: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; box-shadow: 4px 4px 0 #14171F; font: 700 17px Assistant; cursor: pointer;">נסו בעצמכם</button>
+            <button style="min-height: 52px; background: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; font: 700 16px Assistant; padding: 0 15px; cursor: pointer;">עוד רמז</button>
+          </div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;">קלט לא בטוח <strong>עוקף</strong> את הסולם ועובר ישר למגן.</div>
+      </div>
+
+      <!-- S26 guided -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 999px; padding: 4px 9px;">S26</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">השלמה מודרכת</span></div>
+        <div style="width: 372px; height: 660px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; font: 700 16px Assistant;">היכן אנחנו?</div>
+          <div style="height: 140px; background: #EAEDF5; border-bottom: 2px solid #14171F; background-image: repeating-linear-gradient(115deg, rgba(74,91,126,.20) 0 3px, transparent 3px 18px); display: flex; align-items: flex-end; padding: 10px; gap: 8px;">
+            <div style="width: 62px; height: 92px; border: 2px dashed #94897A; border-radius: 11px; background: rgba(255,255,255,.72); display: flex; align-items: center; justify-content: center; font: 500 11px Heebo; direction: ltr; color: #6B6355; text-align: center;">loop<br>build</div>
+            <div style="width: 56px; height: 82px; border: 2px dashed #94897A; border-radius: 11px; background: rgba(255,255,255,.72); display: flex; align-items: center; justify-content: center; font: 500 11px Heebo; direction: ltr; color: #6B6355; text-align: center;">aleph<br>hint</div>
+          </div>
+          <div style="flex: 1; padding: 13px; display: flex; flex-direction: column; gap: 11px;">
+            <div style="background: #14171F; color: #FFF7E9; border-radius: 14px; padding: 12px;">
+              <div style="font: 700 15px Assistant; color: #F0A81E; margin-bottom: 3px;">מפקדת אלף</div>
+              <div style="font-size: 17px; line-height: 1.5;">״נשלים יחד. שמרתי את מה שהיה נכון.״</div>
+            </div>
+            <div style="background: #F4EAD6; border: 2px solid #14171F; border-radius: 14px; padding: 11px; display: flex; flex-direction: column; gap: 8px;">
+              <div style="background: #E3F5EC; border: 2px solid #0F8A5F; border-radius: 10px; padding: 9px 10px; font-size: 16px; display: flex; gap: 7px; align-items: center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0B7350" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M4.5 12.5l5 5L19.5 7"></path></svg><span style="flex: 1;">מטרה</span><span style="font: 700 14px Assistant; color: #0B5A40;">נשמר</span></div>
+              <div style="background: #E3F5EC; border: 2px solid #0F8A5F; border-radius: 10px; padding: 9px 10px; font-size: 16px; display: flex; gap: 7px; align-items: center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0B7350" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M4.5 12.5l5 5L19.5 7"></path></svg><span style="flex: 1;">אבחון</span><span style="font: 700 14px Assistant; color: #0B5A40;">נשמר</span></div>
+              <div style="background: #FFF1D2; border: 3px solid #14171F; border-radius: 10px; padding: 11px 10px; font-size: 16px; display: flex; gap: 7px; align-items: center;"><span style="flex: 1; font-weight: 700;">בחוץ בערב, לקריאת מפות</span><span style="font: 700 14px Assistant;">מושלם יחד</span></div>
+            </div>
+            <div style="background: #E3F5EC; border: 2px solid #0F8A5F; border-radius: 12px; padding: 11px; font-size: 16px; line-height: 1.5;">הקרב יסתיים בניצחון. הקריטריון שהושלם יחד יקבל <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">0</span> — שאר הקריטריונים נשמרים.</div>
+          </div>
+          <div style="padding: 12px 13px; border-top: 2px solid #14171F;"><button style="width: 100%; min-height: 52px; background: #1E4FD8; color: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; box-shadow: 4px 4px 0 #14171F; font: 700 18px Assistant; cursor: pointer;">שגרו וסיימו</button></div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;">אין כשל לצמיתות (A11Y-COG-04). המשחק אומר במפורש איזה קריטריון לא יזוכה — בלי הפתעה.</div>
+      </div>
+
+      <!-- S27 victory -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 999px; padding: 4px 9px;">S27</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">ניצחון וניקוד</span></div>
+        <div style="width: 372px; height: 660px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; font: 700 16px Assistant;">היכן אנחנו? · הושלם</div>
+          <div style="height: 196px; background: #E3F5EC; border-bottom: 2px solid #14171F; display: flex; align-items: center; justify-content: center; padding: 12px; position: relative;">
+            <div style="width: 100%; height: 100%; border: 3px dashed #0F8A5F; border-radius: 14px; display: flex; align-items: center; justify-content: center; font: 500 13px Heebo; direction: ltr; color: #0B5A40; text-align: center;">char_loop_b03_map_lights<br>full route visible</div>
+            <span style="position: absolute; top: 10px; inset-inline-start: 10px; background: #0B7350; color: #FFFFFF; border-radius: 999px; padding: 4px 11px; font: 700 14px Assistant;">הצלחה מלאה</span>
+          </div>
+          <div style="flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 12px; overflow: hidden;">
+            <h1 style="font-family: 'Secular One', sans-serif; font-size: 22px; margin: 0; line-height: 1.3;">מקום וזמן עזרו ללופּ להתאים את התאורה</h1>
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <span style="display: flex; gap: 3px;">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="#F0A81E" stroke="#14171F" stroke-width="1.8"><path d="M12 3l2.8 5.9 6.2.8-4.6 4.4 1.2 6.4L12 17.4 6.4 20.5l1.2-6.4L3 9.7l6.2-.8z"></path></svg>
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="#F0A81E" stroke="#14171F" stroke-width="1.8"><path d="M12 3l2.8 5.9 6.2.8-4.6 4.4 1.2 6.4L12 17.4 6.4 20.5l1.2-6.4L3 9.7l6.2-.8z"></path></svg>
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="#F0A81E" stroke="#14171F" stroke-width="1.8"><path d="M12 3l2.8 5.9 6.2.8-4.6 4.4 1.2 6.4L12 17.4 6.4 20.5l1.2-6.4L3 9.7l6.2-.8z"></path></svg>
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="#F0A81E" stroke="#14171F" stroke-width="1.8"><path d="M12 3l2.8 5.9 6.2.8-4.6 4.4 1.2 6.4L12 17.4 6.4 20.5l1.2-6.4L3 9.7l6.2-.8z"></path></svg>
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="#FFF7E9" stroke="#14171F" stroke-width="1.8"><path d="M12 3l2.8 5.9 6.2.8-4.6 4.4 1.2 6.4L12 17.4 6.4 20.5l1.2-6.4L3 9.7l6.2-.8z"></path></svg>
+              </span>
+              <span style="font: 700 19px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 8px; padding: 3px 10px;">4 / 5</span>
+            </div>
+            <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; overflow: hidden; font-size: 16px;">
+              <div style="padding: 9px 11px; background: #F4EAD6; font: 700 16px Assistant; border-bottom: 2px solid #14171F;">מה הפגנתם</div>
+              <div style="padding: 9px 11px; display: flex; justify-content: space-between; gap: 8px;"><span>זיהוי ההקשר החסר</span><strong style="color: #0B5A40;">עצמאי · 1</strong></div>
+              <div style="padding: 9px 11px; display: flex; justify-content: space-between; gap: 8px; border-top: 2px solid #E5DDCB;"><span>בחירת מקום וזמן</span><strong style="color: #0B5A40;">עצמאי · 1</strong></div>
+              <div style="padding: 9px 11px; display: flex; justify-content: space-between; gap: 8px; border-top: 2px solid #E5DDCB;"><span>תיקון לפי התוצאה</span><strong style="color: #6B3B00;">מבין שתיים · 0.5</strong></div>
+              <div style="padding: 9px 11px; display: flex; justify-content: space-between; gap: 8px; border-top: 2px solid #E5DDCB;"><span>הסבר מה שינה את התוצאה</span><strong style="color: #0B5A40;">עצמאי · 1</strong></div>
+            </div>
+          </div>
+          <div style="padding: 12px 14px; border-top: 2px solid #14171F; display: flex; gap: 9px;">
+            <button style="flex: 1; min-height: 52px; background: #1E4FD8; color: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; box-shadow: 4px 4px 0 #14171F; font: 700 17px Assistant; cursor: pointer;">למפה</button>
+            <button style="min-height: 52px; background: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; font: 700 16px Assistant; padding: 0 15px; cursor: pointer;">שחזרו</button>
+          </div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;">הניקוד מוסבר לפי <strong>מה שהופגן</strong>, לא לפי מספר טעויות. חשיפת כוכבים 900ms.</div>
+      </div>
+
+      <!-- S28 replay -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 999px; padding: 4px 9px;">S28</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">שיחזור · דלתא בלבד</span></div>
+        <div style="width: 372px; height: 660px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; font: 700 16px Assistant;">היכן אנחנו? · שיחזור</div>
+          <div style="height: 150px; background: #E3F5EC; border-bottom: 2px solid #14171F; display: flex; align-items: center; justify-content: center;"><div style="width: 92%; height: 76%; border: 3px dashed #0F8A5F; border-radius: 14px; display: flex; align-items: center; justify-content: center; font: 500 13px Heebo; direction: ltr; color: #0B5A40;">map_lights</div></div>
+          <div style="flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 12px;">
+            <h1 style="font-family: 'Secular One', sans-serif; font-size: 22px; margin: 0;">שיפרתם את השיא שלכם</h1>
+            <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; padding: 13px; display: flex; flex-direction: column; gap: 9px; font-size: 17px;">
+              <div style="display: flex; justify-content: space-between;"><span>השיא הקודם</span><strong><span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">3.5 / 5</span></strong></div>
+              <div style="display: flex; justify-content: space-between;"><span>הפעם</span><strong><span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">4.5 / 5</span></strong></div>
+              <div style="height: 2px; background: #E5DDCB;"></div>
+              <div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-weight: 700;">נוסף לארנק</span><span style="background: #F0A81E; border: 2px solid #14171F; border-radius: 8px; padding: 3px 10px; font: 700 17px Heebo; direction: ltr;">+1</span></div>
+            </div>
+            <div style="background: #F4EAD6; border-radius: 12px; padding: 12px; font-size: 16px; line-height: 1.55;">רק שיפור מעל השיא האישי מוסיף כוכבים. שיחזור עם ניקוד נמוך יותר <strong>לא</strong> מוריד כלום.</div>
+            <div style="background: #FFFFFF; border: 2px dashed #94897A; border-radius: 12px; padding: 12px; font-size: 16px; line-height: 1.55; color: #3A3630;"><strong>מצב שני:</strong> ניקוד שווה או נמוך → ״השיא שלכם נשאר <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">4.5 / 5</span>״ + <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">+0</span>, בלי טקסט שלילי.</div>
+          </div>
+          <div style="padding: 12px 14px; border-top: 2px solid #14171F;"><button style="width: 100%; min-height: 52px; background: #1E4FD8; color: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; box-shadow: 4px 4px 0 #14171F; font: 700 18px Assistant; cursor: pointer;">למפה</button></div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;">טרנזקציה אידמפוטנטית: לחיצה כפולה לא מזכה פעמיים (A11Y-INP-05).</div>
+      </div>
+
+      <!-- S29 technical -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 999px; padding: 4px 9px;">S29</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">תקלה טכנית / לא מקוון</span></div>
+        <div style="width: 372px; height: 660px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; font: 700 16px Assistant;">היכן אנחנו?</div>
+          <div style="flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 14px; justify-content: center;">
+            <div style="background: #F4EAD6; border: 3px solid #14171F; border-radius: 18px; padding: 18px;">
+              <div style="width: 52px; height: 52px; border: 3px solid #14171F; border-radius: 14px; background: #FFF7E9; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#14171F" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v9M12 18v.1"></path><circle cx="12" cy="12" r="9"></circle></svg>
+              </div>
+              <h1 style="font-family: 'Secular One', sans-serif; font-size: 22px; margin: 0 0 8px;">משהו לא נטען</h1>
+              <p style="font-size: 17px; line-height: 1.55; margin: 0 0 14px; color: #3A3630;">האבחון וההקשר שבחרתם נשארים במסך הזה. הם לא נשמרו.</p>
+              <div style="display: flex; flex-direction: column; gap: 9px;">
+                <button style="min-height: 52px; background: #1E4FD8; color: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; box-shadow: 4px 4px 0 #14171F; font: 700 17px Assistant; cursor: pointer;">נסו שוב</button>
+                <button style="min-height: 48px; background: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; font: 700 17px Assistant; cursor: pointer;">המשיכו עם בנה מודרך</button>
+                <button style="min-height: 44px; background: transparent; border: none; text-decoration: underline; font: 600 16px Assistant; cursor: pointer;">חזרה למפה</button>
+              </div>
+            </div>
+            <div style="background: #FFFFFF; border: 2px dashed #94897A; border-radius: 12px; padding: 12px; font-size: 16px; line-height: 1.55; color: #3A3630;">אין ניקוד שנרשם, אין כוכבים שאובדים, ואין הבטחת שמירה שלא התקיימה.</div>
+          </div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;">אותה שלישיית פעולות בכל תקלה בפלטפורמה — נסו שוב / חלופה / מפה.</div>
+      </div>
+
+      <!-- S30 safety -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #A85C00; color: #FFFFFF; border-radius: 999px; padding: 4px 9px;">S30</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">עצירת בטיחות מוגנת</span></div>
+        <div style="width: 372px; height: 660px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; font: 700 16px Assistant;">סודות רשת · קרב <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block; margin-inline-start: 4px;">21</span></div>
+          <div style="height: 176px; background: #F4EAD6; border-bottom: 2px solid #14171F; display: flex; align-items: center; justify-content: center; padding: 12px;">
+            <div style="width: 100%; height: 100%; border: 3px solid #14171F; border-radius: 14px; background: #FFF7E9; display: flex; align-items: center; justify-content: center; gap: 12px;">
+              <div style="width: 62px; height: 96px; border: 2px dashed #94897A; border-radius: 11px; display: flex; align-items: center; justify-content: center; font: 500 11px Heebo; direction: ltr; color: #6B6355; text-align: center;">loop<br>safety</div>
+              <div style="width: 66px; height: 66px; border: 3px solid #A85C00; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#A85C00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l7 2.6v5.6c0 4.2-2.9 7.4-7 8.8-4.1-1.4-7-4.6-7-8.8V6.1z"></path><path d="M9.6 12.2l1.8 1.8 3.4-3.6"></path></svg>
+              </div>
+            </div>
+          </div>
+          <div style="flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 12px;">
+            <h1 style="font-family: 'Secular One', sans-serif; font-size: 22px; margin: 0;">לופּ עצר לפני השליחה</h1>
+            <p style="font-size: 17px; line-height: 1.55; margin: 0; color: #3A3630;">בטיוטה יש שדה של מידע אישי. לא שולחים מידע כזה.</p>
+            <div style="background: #F4EAD6; border: 2px solid #14171F; border-radius: 14px; padding: 12px;">
+              <div style="font: 700 16px Assistant; margin-bottom: 7px;">מה לעשות במקום</div>
+              <div style="font-size: 17px; line-height: 1.55;">החליפו את השדה בתפקיד: <strong>״רכז המשימה״</strong> במקום שם מלא.</div>
+            </div>
+            <div style="background: #FFFFFF; border: 2px dashed #94897A; border-radius: 12px; padding: 11px; font-size: 16px; line-height: 1.5; color: #3A3630;">הבקשה לא נשלחה לשום מקום. הטקסט שנחסם לא מוצג ולא נשמר.</div>
+          </div>
+          <div style="padding: 12px 14px; border-top: 2px solid #14171F; display: flex; flex-direction: column; gap: 9px;">
+            <button style="min-height: 52px; background: #1E4FD8; color: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; box-shadow: 4px 4px 0 #14171F; font: 700 17px Assistant; cursor: pointer;">תקנו את השדה</button>
+            <button style="min-height: 48px; background: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; font: 700 17px Assistant; cursor: pointer;">מה מותר לכתוב?</button>
+          </div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;">נייר שקוע, קו דיו וסימן חרדל — <strong>אין אדום ואין אזעקה</strong> (A11Y-COL-05).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SEVEN TEMPLATES ================= -->
+  <div style="background: #FFF7E9; border: 2px solid #14171F; border-radius: 20px; box-shadow: 6px 6px 0 #14171F; padding: 28px;">
+    <h2 style="font-family: 'Secular One', sans-serif; font-size: 30px; margin: 0 0 6px;">שבע תבניות אינטראקציה</h2>
+    <p style="margin: 0 0 24px; font-size: 17px; line-height: 1.55; color: #3A3630; max-width: 86ch;">כל תבנית מודגמת בקרב מאושר אמיתי מתוך <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">04_BATTLE_CONTENT</span>, בגוון האזור שלו. המכניקה הלימודית והתשובה הנכונה נשמרות בדיוק כפי שאושרו.</p>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 30px; align-items: flex-start;">
+
+      <!-- T1 prompt assembly -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #6A3FA8; color: #FFFFFF; border-radius: 999px; padding: 4px 9px;">T1</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">הרכבת פרומפט</span><span style="font: 500 14px Heebo; direction: ltr; color: #6B6355; margin-inline-start: auto;">b14</span></div>
+        <div style="width: 372px; height: 700px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; gap: 8px;"><span style="font: 700 16px Assistant; flex: 1;">לפי הסדר</span><span style="font: 500 14px Heebo; direction: ltr; color: #6B6355;">14 / 23</span></div>
+          <div style="height: 150px; background: #F0E9FB; border-bottom: 2px solid #14171F; background-image: repeating-linear-gradient(45deg, rgba(106,63,168,.16) 0 4px, transparent 4px 15px), repeating-linear-gradient(-45deg, rgba(106,63,168,.16) 0 4px, transparent 4px 15px); display: flex; align-items: flex-end; padding: 10px;">
+            <div style="width: 62px; height: 94px; border: 2px dashed #94897A; border-radius: 11px; background: rgba(255,255,255,.75); display: flex; align-items: center; justify-content: center; font: 500 11px Heebo; direction: ltr; color: #6B6355; text-align: center;">loop<br>closed_early</div>
+            <span style="margin-inline-start: auto; background: #6A3FA8; color: #FFFFFF; border-radius: 999px; padding: 4px 10px; font: 700 14px Assistant;">תסבוכת</span>
+          </div>
+          <div style="flex: 1; padding: 13px; display: flex; flex-direction: column; gap: 11px; overflow: hidden;">
+            <div style="font: 700 19px Assistant; line-height: 1.4;">סדרו את הצעדים בסדר שעובד.</div>
+            <div style="background: #F4EAD6; border: 2px solid #14171F; border-radius: 14px; padding: 11px; display: flex; flex-direction: column; gap: 8px;">
+              <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 10px; padding: 10px; display: flex; align-items: center; gap: 8px; font-size: 16px;">
+                <span style="font: 700 14px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 5px; padding: 2px 7px; flex: none;">1</span>
+                <span style="flex: 1;">הכניסו את המכתב לקופסה</span>
+                <span style="display: flex; gap: 4px;">
+                  <button aria-label="העלו למקום 1" style="width: 44px; height: 44px; background: #F4EAD6; border: 2px solid #14171F; border-radius: 9px; display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#14171F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"></path></svg></button>
+                  <button aria-label="הורידו למקום 2" style="width: 44px; height: 44px; background: #F4EAD6; border: 2px solid #14171F; border-radius: 9px; display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#14171F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v13M6 12l6 6 6-6"></path></svg></button>
+                </span>
+              </div>
+              <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 10px; padding: 10px; display: flex; align-items: center; gap: 8px; font-size: 16px;">
+                <span style="font: 700 14px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 5px; padding: 2px 7px; flex: none;">2</span>
+                <span style="flex: 1;">סגרו את הקופסה</span>
+                <span style="display: flex; gap: 4px;">
+                  <button aria-label="העלו למקום 1" style="width: 44px; height: 44px; background: #F4EAD6; border: 2px solid #14171F; border-radius: 9px; cursor: pointer;"></button>
+                  <button aria-label="הורידו למקום 3" style="width: 44px; height: 44px; background: #F4EAD6; border: 2px solid #14171F; border-radius: 9px; cursor: pointer;"></button>
+                </span>
+              </div>
+              <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 10px; padding: 10px; display: flex; align-items: center; gap: 8px; font-size: 16px;">
+                <span style="font: 700 14px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 5px; padding: 2px 7px; flex: none;">3</span>
+                <span style="flex: 1;">הדביקו את התווית</span>
+                <span style="display: flex; gap: 4px;">
+                  <button aria-label="העלו למקום 2" style="width: 44px; height: 44px; background: #F4EAD6; border: 2px solid #14171F; border-radius: 9px; cursor: pointer;"></button>
+                  <button aria-label="הורידו" disabled style="width: 44px; height: 44px; background: #ECE7DC; border: 2px dashed #94897A; border-radius: 9px;"></button>
+                </span>
+              </div>
+            </div>
+            <div style="background: #E7EDFD; border: 2px solid #1E4FD8; border-radius: 12px; padding: 10px; font-size: 16px; line-height: 1.5; color: #17369B;">מיקום נוכחי מוכרז בקול: ״הכניסו את המכתב — מקום 1 מתוך 3״.</div>
+          </div>
+          <div style="padding: 12px 13px; border-top: 2px solid #14171F;"><button style="width: 100%; min-height: 52px; background: #1E4FD8; color: #FFFFFF; border: 2px solid #14171F; border-radius: 999px; box-shadow: 4px 4px 0 #14171F; font: 700 18px Assistant; cursor: pointer;">שגרו את לופּ</button></div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;"><strong>קרבות:</strong> 1, 11, 14. סדר במספרים ובטקסט; גרירה אופציונלית בלבד.</div>
+      </div>
+
+      <!-- T2 fault scan -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #4A5B7E; color: #FFFFFF; border-radius: 999px; padding: 4px 9px;">T2</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">סריקת תקלה</span><span style="font: 500 14px Heebo; direction: ltr; color: #6B6355; margin-inline-start: auto;">b02</span></div>
+        <div style="width: 372px; height: 700px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; gap: 8px;"><span style="font: 700 16px Assistant; flex: 1;">למי זה מיועד?</span><span style="font: 500 14px Heebo; direction: ltr; color: #6B6355;">02 / 23</span></div>
+          <div style="height: 168px; background: #EAEDF5; border-bottom: 2px solid #14171F; background-image: repeating-linear-gradient(115deg, rgba(74,91,126,.20) 0 3px, transparent 3px 18px); display: flex; align-items: center; justify-content: center; padding: 10px;">
+            <div style="width: 100%; height: 100%; border: 3px dashed #4A5B7E; border-radius: 12px; background: rgba(255,255,255,.6); display: flex; align-items: center; justify-content: center; font: 500 12px Heebo; direction: ltr; color: #4A5B7E; text-align: center;">char_loop_b02_office_kit</div>
+          </div>
+          <div style="flex: 1; padding: 13px; display: flex; flex-direction: column; gap: 11px; overflow: hidden;">
+            <div style="font: 700 19px Assistant; line-height: 1.4;">סמנו מה חסר בהזמנה.</div>
+            <div style="background: #F4EAD6; border: 2px solid #14171F; border-radius: 14px; padding: 12px; font-size: 17px; line-height: 1.7;">
+              ״הכינו ציוד <span style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 6px; padding: 1px 6px;">לסדנה</span> <span style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 6px; padding: 1px 6px;">מחר</span> <span style="background: #FFF1D2; border: 3px solid #A85C00; border-radius: 6px; padding: 1px 6px; font-weight: 700;">[חסר]</span>״
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 13px; box-shadow: 3px 3px 0 #14171F; padding: 12px; min-height: 54px; font: 400 17px Assistant; cursor: pointer; display: flex; align-items: center; gap: 9px;"><span style="width: 22px; height: 22px; border: 2px solid #14171F; border-radius: 6px; flex: none;"></span>לא נאמר <strong>למי</strong> הציוד</button>
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 13px; box-shadow: 3px 3px 0 #14171F; padding: 12px; min-height: 54px; font: 400 17px Assistant; cursor: pointer; display: flex; align-items: center; gap: 9px;"><span style="width: 22px; height: 22px; border: 2px solid #14171F; border-radius: 6px; flex: none;"></span>לא נאמר <strong>מתי</strong></button>
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 13px; box-shadow: 3px 3px 0 #14171F; padding: 12px; min-height: 54px; font: 400 17px Assistant; cursor: pointer; display: flex; align-items: center; gap: 9px;"><span style="width: 22px; height: 22px; border: 2px solid #14171F; border-radius: 6px; flex: none;"></span>לא נאמר <strong>באיזה פורמט</strong></button>
+            </div>
+            <div style="background: #FFFFFF; border: 2px dashed #94897A; border-radius: 12px; padding: 10px; font-size: 16px; line-height: 1.5; color: #3A3630;">הפער מסומן במסגרת ובתווית ״[חסר]״ — לא בצבע בלבד.</div>
+          </div>
+          <div style="padding: 12px 13px; border-top: 2px solid #14171F; display: flex; gap: 9px; align-items: center;">
+            <button style="flex: 1; min-height: 52px; background: #ECE7DC; color: #6B6355; border: 2px dashed #94897A; border-radius: 999px; font: 700 17px Assistant;">סמנו תקלה</button>
+            <button style="min-height: 52px; background: transparent; border: none; border-bottom: 2px solid #1E4FD8; color: #1E4FD8; font: 700 16px Assistant; cursor: pointer;">מה זה אומר?</button>
+          </div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;"><strong>קרבות:</strong> 2, 9, 15, 21. פרומפט קריא + 3 מסקנות סגורות.</div>
+      </div>
+
+      <!-- T3 power selection -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #B8480C; color: #FFFFFF; border-radius: 999px; padding: 4px 9px;">T3</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">בחירת כוח</span><span style="font: 500 14px Heebo; direction: ltr; color: #6B6355; margin-inline-start: auto;">b08</span></div>
+        <div style="width: 372px; height: 700px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; gap: 8px;"><span style="font: 700 16px Assistant; flex: 1;">כמה זה מספיק</span><span style="font: 500 14px Heebo; direction: ltr; color: #6B6355;">08 / 23</span></div>
+          <div style="height: 168px; background: #FDEBDB; border-bottom: 2px solid #14171F; background-image: repeating-linear-gradient(90deg, rgba(184,72,12,.18) 0 8px, transparent 8px 24px); display: flex; align-items: center; justify-content: center; padding: 10px; position: relative;">
+            <div style="width: 100%; height: 100%; border: 3px dashed #B8480C; border-radius: 12px; background: rgba(255,255,255,.55); display: flex; align-items: center; justify-content: center; font: 500 12px Heebo; direction: ltr; color: #B8480C; text-align: center;">char_loop_b08_area_full</div>
+            <span style="position: absolute; top: 8px; inset-inline-start: 8px; background: #B8480C; color: #FFFFFF; border-radius: 999px; padding: 3px 10px; font: 700 14px Assistant;">עוד־ועוד</span>
+          </div>
+          <div style="flex: 1; padding: 13px; display: flex; flex-direction: column; gap: 11px; overflow: hidden;">
+            <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 10px; font-size: 16px; line-height: 1.5;"><strong>המטרה:</strong> לעצור את הסרט־נע על חמש קופסאות בדיוק.</div>
+            <div style="font: 700 19px Assistant; line-height: 1.4;">בחרו את האילוץ שעוצר את הייצור.</div>
+            <div style="display: flex; flex-direction: column; gap: 9px;">
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; box-shadow: 3px 3px 0 #14171F; padding: 12px; min-height: 62px; font: 400 17px Assistant; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 9px;"><span style="width: 22px; height: 22px; border: 2px solid #14171F; border-radius: 999px; flex: none;"></span><strong>״כמה שצריך״</strong></div>
+                <div style="font-size: 16px; color: #3A3630; padding-inline-start: 31px;">אילוץ · כמות</div>
+              </button>
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; box-shadow: 3px 3px 0 #14171F; padding: 12px; min-height: 62px; font: 400 17px Assistant; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 9px;"><span style="width: 22px; height: 22px; border: 2px solid #14171F; border-radius: 999px; flex: none;"></span><strong>״הרבה קופסאות״</strong></div>
+                <div style="font-size: 16px; color: #3A3630; padding-inline-start: 31px;">אילוץ · כמות</div>
+              </button>
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; box-shadow: 3px 3px 0 #14171F; padding: 12px; min-height: 62px; font: 400 17px Assistant; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 9px;"><span style="width: 22px; height: 22px; border: 2px solid #14171F; border-radius: 999px; flex: none;"></span><strong>״חמש קופסאות בדיוק״</strong></div>
+                <div style="font-size: 16px; color: #3A3630; padding-inline-start: 31px;">אילוץ · כמות</div>
+              </button>
+            </div>
+          </div>
+          <div style="padding: 12px 13px; border-top: 2px solid #14171F;"><button style="width: 100%; min-height: 52px; background: #ECE7DC; color: #6B6355; border: 2px dashed #94897A; border-radius: 999px; font: 700 17px Assistant;">בחרו כוח כדי לשגר</button></div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;"><strong>קרבות:</strong> 3, 5, 8, 10. 2–4 כרטיסים, בחירה יחידה, כל בחירה מובילה לתוצאה מאושרת.</div>
+      </div>
+
+      <!-- T4 fault repair -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #6A3FA8; color: #FFFFFF; border-radius: 999px; padding: 4px 9px;">T4</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">תיקון תקלה</span><span style="font: 500 14px Heebo; direction: ltr; color: #6B6355; margin-inline-start: auto;">b16</span></div>
+        <div style="width: 372px; height: 700px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; gap: 8px;"><span style="font: 700 16px Assistant; flex: 1;">סתירה פנימית</span><span style="font: 500 14px Heebo; direction: ltr; color: #6B6355;">16 / 23</span></div>
+          <div style="height: 152px; background: #F0E9FB; border-bottom: 2px solid #14171F; background-image: repeating-linear-gradient(45deg, rgba(106,63,168,.16) 0 4px, transparent 4px 15px), repeating-linear-gradient(-45deg, rgba(106,63,168,.16) 0 4px, transparent 4px 15px); display: flex; align-items: center; justify-content: center; padding: 10px;">
+            <div style="width: 100%; height: 100%; border: 3px dashed #6A3FA8; border-radius: 12px; background: rgba(255,255,255,.6); display: flex; align-items: center; justify-content: center; font: 500 12px Heebo; direction: ltr; color: #6A3FA8; text-align: center;">ui_b16_clipped_note</div>
+          </div>
+          <div style="flex: 1; padding: 13px; display: flex; flex-direction: column; gap: 11px; overflow: hidden;">
+            <div style="font: 700 19px Assistant; line-height: 1.4;">החליפו את הסתירה בכלל אחד חיובי.</div>
+            <div style="background: #F4EAD6; border: 2px solid #14171F; border-radius: 14px; padding: 12px; font-size: 17px; line-height: 1.7;">
+              ״כתבו פתק <span style="background: #FFF1D2; border: 3px solid #A85C00; border-radius: 6px; padding: 1px 6px; font-weight: 700;">ענק</span> שייכנס ל<span style="background: #FFF1D2; border: 3px solid #A85C00; border-radius: 6px; padding: 1px 6px; font-weight: 700;">פתק קטן</span>״
+              <div style="font-size: 15px; color: #A85C00; font-weight: 700; margin-top: 8px;">שתי הדרישות סותרות זו את זו</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 13px; box-shadow: 3px 3px 0 #14171F; padding: 12px; min-height: 54px; font: 400 17px Assistant; cursor: pointer;">״בגודל בינוני שנקרא מטר משם״</button>
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 13px; box-shadow: 3px 3px 0 #14171F; padding: 12px; min-height: 54px; font: 400 17px Assistant; cursor: pointer;">״לא ענק ולא קטן״</button>
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 13px; box-shadow: 3px 3px 0 #14171F; padding: 12px; min-height: 54px; font: 400 17px Assistant; cursor: pointer;">״בגודל שמתאים״</button>
+            </div>
+            <div style="background: #E7EDFD; border: 2px solid #1E4FD8; border-radius: 12px; padding: 10px; font-size: 16px; line-height: 1.5; color: #17369B;">הטקסט החתוך בבמה הוא הדגמת פריסה — הטקסט המלא זמין לקורא מסך.</div>
+          </div>
+          <div style="padding: 12px 13px; border-top: 2px solid #14171F;"><button style="width: 100%; min-height: 52px; background: #ECE7DC; color: #6B6355; border: 2px dashed #94897A; border-radius: 999px; font: 700 17px Assistant;">בחרו תיקון</button></div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;"><strong>קרבות:</strong> 4, 16. הפער מוצג בתוך הפרומפט עצמו, לא בכרטיס נפרד.</div>
+      </div>
+
+      <!-- T5 robot test -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #B8480C; color: #FFFFFF; border-radius: 999px; padding: 4px 9px;">T5</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">מבחן רובוט</span><span style="font: 500 14px Heebo; direction: ltr; color: #6B6355; margin-inline-start: auto;">b12</span></div>
+        <div style="width: 372px; height: 700px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; gap: 8px;"><span style="font: 700 16px Assistant; flex: 1;">מבחן איכות</span><span style="font: 500 14px Heebo; direction: ltr; color: #6B6355;">12 / 23</span></div>
+          <div style="height: 116px; background: #FDEBDB; border-bottom: 2px solid #14171F; background-image: repeating-linear-gradient(90deg, rgba(184,72,12,.18) 0 8px, transparent 8px 24px); display: flex; align-items: flex-end; padding: 9px;">
+            <div style="width: 58px; height: 84px; border: 2px dashed #94897A; border-radius: 11px; background: rgba(255,255,255,.75); display: flex; align-items: center; justify-content: center; font: 500 11px Heebo; direction: ltr; color: #6B6355; text-align: center;">loop<br>test</div>
+          </div>
+          <div style="flex: 1; padding: 13px; display: flex; flex-direction: column; gap: 10px; overflow: hidden;">
+            <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 10px; font-size: 16px; line-height: 1.5;"><strong>הקריטריון על הלוח:</strong> סוללה עובדת <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">2</span> שעות רצוף.</div>
+            <div style="font: 700 19px Assistant; line-height: 1.4;">איזו סוללה עוברת את הקריטריון?</div>
+            <div style="display: flex; gap: 9px;">
+              <button style="flex: 1; text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 13px; box-shadow: 3px 3px 0 #14171F; padding: 11px; cursor: pointer;">
+                <div style="font: 700 17px Assistant; margin-bottom: 6px;">אלפא</div>
+                <div style="height: 56px; background: #F4EAD6; border: 2px dashed #94897A; border-radius: 9px; display: flex; align-items: center; justify-content: center; font: 500 11px Heebo; direction: ltr; color: #6B6355;">battery_alpha</div>
+                <div style="font-size: 16px; margin-top: 7px;">עבדה <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">1:10</span></div>
+              </button>
+              <button style="flex: 1; text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 13px; box-shadow: 3px 3px 0 #14171F; padding: 11px; cursor: pointer;">
+                <div style="font: 700 17px Assistant; margin-bottom: 6px;">בטא</div>
+                <div style="height: 56px; background: #F4EAD6; border: 2px dashed #94897A; border-radius: 9px; display: flex; align-items: center; justify-content: center; font: 500 11px Heebo; direction: ltr; color: #6B6355;">battery_beta</div>
+                <div style="font-size: 16px; margin-top: 7px;">עבדה <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">2:20</span></div>
+              </button>
+            </div>
+            <div style="background: #F4EAD6; border: 2px solid #14171F; border-radius: 12px; padding: 11px; font-size: 16px; line-height: 1.55;">שתי התוצאות הן הדמיה מאושרת שנכתבה מראש. אף אחת מהן לא נוצרה על־ידי AI בזמן אמת.</div>
+          </div>
+          <div style="padding: 12px 13px; border-top: 2px solid #14171F;"><button style="width: 100%; min-height: 52px; background: #ECE7DC; color: #6B6355; border: 2px dashed #94897A; border-radius: 999px; font: 700 17px Assistant;">בחרו תוצאה</button></div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;"><strong>קרבות:</strong> 6, 12, 17, 19. השוואה בין שתי תוצאות מול קריטריון גלוי.</div>
+      </div>
+
+      <!-- T6 responsibility shield -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #0F6E6E; color: #FFFFFF; border-radius: 999px; padding: 4px 9px;">T6</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">מגן אחריות</span><span style="font: 500 14px Heebo; direction: ltr; color: #6B6355; margin-inline-start: auto;">b20</span></div>
+        <div style="width: 372px; height: 700px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; gap: 8px;"><span style="font: 700 16px Assistant; flex: 1;">מי אמר?</span><span style="font: 500 14px Heebo; direction: ltr; color: #6B6355;">20 / 23</span></div>
+          <div style="height: 108px; background: #E1F2F2; border-bottom: 2px solid #14171F; background-image: linear-gradient(180deg, rgba(15,110,110,.16) 0 50%, transparent 50%); display: flex; align-items: center; padding: 10px; gap: 9px;">
+            <div style="width: 54px; height: 80px; border: 2px dashed #94897A; border-radius: 11px; background: rgba(255,255,255,.8); display: flex; align-items: center; justify-content: center; font: 500 11px Heebo; direction: ltr; color: #6B6355; text-align: center;">loop<br>compare</div>
+            <span style="margin-inline-start: auto; background: #0F6E6E; color: #FFFFFF; border-radius: 999px; padding: 4px 10px; font: 700 14px Assistant;">ד״ר ודאות</span>
+          </div>
+          <div style="flex: 1; padding: 13px; display: flex; flex-direction: column; gap: 10px; overflow: hidden;">
+            <div style="font: 700 19px Assistant; line-height: 1.4;">השוו את לוח הזמנים מול המדריך.</div>
+            <div style="display: flex; flex-direction: column; gap: 9px;">
+              <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 13px; overflow: hidden;">
+                <div style="background: #F4EAD6; padding: 8px 11px; font: 700 16px Assistant; border-bottom: 2px solid #14171F;">מקור מועמד · תשובת AI</div>
+                <div style="padding: 11px; font-size: 16px; line-height: 1.6;">פתיחה <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">08:00</span><br>סדנה <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">09:30</span><br>סיכום <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">11:00</span></div>
+              </div>
+              <div style="background: #FFFFFF; border: 3px solid #0F6E6E; border-radius: 13px; overflow: hidden;">
+                <div style="background: #E1F2F2; padding: 8px 11px; font: 700 16px Assistant; border-bottom: 2px solid #0F6E6E; color: #0F6E6E; display: flex; align-items: center; gap: 7px;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F6E6E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M6 4.5h12v6.8c0 4-2.6 6.9-6 8.2-3.4-1.3-6-4.2-6-8.2z"></path></svg>
+                  מקור מאושר · מדריך הסוכנות
+                </div>
+                <div style="padding: 11px; font-size: 16px; line-height: 1.6;">פתיחה <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">08:00</span><br>סדנה <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">10:30</span><br>סיכום <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">11:00</span></div>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 13px; box-shadow: 3px 3px 0 #14171F; padding: 12px; min-height: 52px; font: 400 17px Assistant; cursor: pointer;">עצרו — שעת הסדנה לא תואמת</button>
+              <button style="text-align: right; background: #FFFFFF; border: 2px solid #14171F; border-radius: 13px; box-shadow: 3px 3px 0 #14171F; padding: 12px; min-height: 52px; font: 400 17px Assistant; cursor: pointer;">אשרו — נשמע משכנע</button>
+            </div>
+          </div>
+          <div style="padding: 12px 13px; border-top: 2px solid #14171F;"><button style="width: 100%; min-height: 52px; background: #ECE7DC; color: #6B6355; border: 2px dashed #94897A; border-radius: 999px; font: 700 17px Assistant;">בחרו החלטה</button></div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;"><strong>קרבות:</strong> 20. מקור מועמד ומקור מאושר מקבלים כותרת קבועה ונפרדת — האמינות היא <strong>תווית</strong>, לא גוון.</div>
+      </div>
+
+      <!-- T7 combo -->
+      <div style="width: 372px; flex: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font: 700 13px Heebo; direction: ltr; background: #14171F; color: #F0A81E; border-radius: 999px; padding: 4px 9px;">T7</span><span style="font-family: 'Secular One', sans-serif; font-size: 18px;">קרב שילוב</span><span style="font: 500 14px Heebo; direction: ltr; color: #6B6355; margin-inline-start: auto;">b07</span></div>
+        <div style="width: 372px; height: 700px; background: #FFF7E9; border: 3px solid #14171F; border-radius: 32px; box-shadow: 6px 6px 0 #14171F; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 52px; border-bottom: 2px solid #14171F; display: flex; align-items: center; padding: 0 12px; gap: 8px;"><span style="font: 700 16px Assistant; flex: 1;">שילוב עוטף</span><span style="background: #F0A81E; border: 2px solid #14171F; border-radius: 999px; padding: 2px 9px; font: 700 14px Assistant;">סיום אזור</span></div>
+          <div style="height: 118px; background: #EAEDF5; border-bottom: 2px solid #14171F; background-image: repeating-linear-gradient(115deg, rgba(74,91,126,.20) 0 3px, transparent 3px 18px); display: flex; align-items: flex-end; padding: 9px; gap: 8px;">
+            <div style="width: 56px; height: 84px; border: 2px dashed #94897A; border-radius: 11px; background: rgba(255,255,255,.75); display: flex; align-items: center; justify-content: center; font: 500 11px Heebo; direction: ltr; color: #6B6355; text-align: center;">loop<br>posters</div>
+            <div style="width: 62px; height: 92px; border: 2px dashed #4A5B7E; border-radius: 11px; background: rgba(74,91,126,.18); display: flex; align-items: center; justify-content: center; font: 500 11px Heebo; direction: ltr; color: #4A5B7E; text-align: center;">bearach<br>reaction</div>
+          </div>
+          <div style="flex: 1; padding: 13px; display: flex; flex-direction: column; gap: 10px; overflow: hidden;">
+            <div style="font: 700 19px Assistant; line-height: 1.4;">מלאו שלושה חריצים ושגרו פעם אחת.</div>
+            <div style="background: #F4EAD6; border: 2px solid #14171F; border-radius: 14px; padding: 11px; display: flex; flex-direction: column; gap: 8px;">
+              <div style="background: #E3F5EC; border: 2px solid #0F8A5F; border-radius: 10px; padding: 10px; font-size: 16px; display: flex; align-items: center; gap: 7px;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0B7350" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M4.5 12.5l5 5L19.5 7"></path></svg>
+                <span style="flex: 1;">שלטי הכוונה לאירוע</span><span style="font: 700 14px Assistant; color: #0B5A40;">מטרה ✓</span>
+              </div>
+              <div style="background: #E3F5EC; border: 2px solid #0F8A5F; border-radius: 10px; padding: 10px; font-size: 16px; display: flex; align-items: center; gap: 7px;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0B7350" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M4.5 12.5l5 5L19.5 7"></path></svg>
+                <span style="flex: 1;">למבקרים שלא היו כאן</span><span style="font: 700 14px Assistant; color: #0B5A40;">קהל ✓</span>
+              </div>
+              <div style="background: #FFFFFF; border: 3px dashed #1E4FD8; border-radius: 10px; padding: 12px 10px; font-size: 16px; display: flex; align-items: center; gap: 7px;">
+                <span style="flex: 1; color: #17369B; font-weight: 700;">חסר פורמט</span><span style="font: 700 14px Assistant; color: #17369B;">בחרו</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button style="flex: 1; min-width: 100px; background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; box-shadow: 3px 3px 0 #14171F; padding: 11px; min-height: 52px; font: 700 16px Assistant; cursor: pointer;">פסקה</button>
+              <button style="flex: 1; min-width: 100px; background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; box-shadow: 3px 3px 0 #14171F; padding: 11px; min-height: 52px; font: 700 16px Assistant; cursor: pointer;">שלט עם חצים</button>
+              <button style="flex: 1; min-width: 100px; background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; box-shadow: 3px 3px 0 #14171F; padding: 11px; min-height: 52px; font: 700 16px Assistant; cursor: pointer;">טבלה</button>
+            </div>
+            <div style="background: #FFF0D6; border: 2px solid #A85C00; border-radius: 12px; padding: 10px; font-size: 16px; line-height: 1.5; color: #6B3B00;">שיגור אחד לשלושה רכיבים. משוב שילוב מזהה <strong>רכיב אחד</strong> לשיפור בכל סבב.</div>
+          </div>
+          <div style="padding: 12px 13px; border-top: 2px solid #14171F;"><button style="width: 100%; min-height: 52px; background: #ECE7DC; color: #6B6355; border: 2px dashed #94897A; border-radius: 999px; font: 700 17px Assistant;">מלאו שלושה חריצים</button></div>
+        </div>
+        <div style="font-size: 15px; line-height: 1.55; color: #3A3630; margin-top: 10px;"><strong>קרבות:</strong> 7, 13, 18, 22. 135 שניות. חריצים שנכונים נעולים כ־״נכון — נשמר״ בין הניסיונות.</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1900,&quot;height&quot;:1100}}"></script>
+</body>
+</html>

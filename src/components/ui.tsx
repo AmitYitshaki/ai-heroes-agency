@@ -1,8 +1,9 @@
-import { useEffect, useRef, type ButtonHTMLAttributes, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Check, LockKeyhole, Settings, Star, Volume2, WalletCards, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Briefcase, Check, LockKeyhole, Settings, Star, Volume2, WalletCards, X } from 'lucide-react';
 import { useGame } from '../state/GameContext';
 import { displayStars } from '../engine/scoring';
+import { skillCatalog } from '../content/battles';
 
 export function Button({ variant = 'primary', className = '', ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'improve' | 'ghost' }) {
   return <button className={`button button--${variant} ${className}`} {...props} />;
@@ -52,6 +53,8 @@ export function AppShell({ children, minimal = false }: { children: ReactNode; m
   const { progress } = useGame();
   const location = useLocation();
   const showBack = !['/', '/map'].includes(location.pathname);
+  const [briefcaseOpen, setBriefcaseOpen] = useState(false);
+  const earnedCount = skillCatalog.filter((skill) => progress.unlockedPowerIds.includes(skill.powerId)).length;
   return <div className={`app-shell ${progress.settings.reducedMotion ? 'reduced-motion' : ''}`}>
     <a href="#main" className="skip-link">דלגו לתוכן</a>
     {!minimal && <header className="topbar">
@@ -61,10 +64,24 @@ export function AppShell({ children, minimal = false }: { children: ReactNode; m
       </div>
       <div className="topbar__actions">
         <span className="wallet" aria-label={`ארנק: ${displayStars(progress.walletHalfUnits)} כוכבים`}><WalletCards /><Ltr>{displayStars(progress.walletHalfUnits)}</Ltr></span>
+        <button type="button" className="icon-link" aria-label={`תיק הכוחות: ${earnedCount} מתוך ${skillCatalog.length} נאספו`} onClick={() => setBriefcaseOpen(true)}><Briefcase /></button>
         <Link className="icon-link" aria-label="הגדרות שמע ונגישות" to="/settings"><Settings /></Link>
       </div>
     </header>}
     <main id="main" tabIndex={-1}>{children}</main>
+    {briefcaseOpen && <Modal title="תיק הכוחות" onClose={() => setBriefcaseOpen(false)}>
+      <p>כל כוח נפתח כשמשלימים את הקרב שמלמד אותו. הכוחות אינם נקנים ואינם מושפעים משיפור עתידי.</p>
+      <div className="skill-chip-grid">
+        {skillCatalog.map((skill) => {
+          const earned = progress.unlockedPowerIds.includes(skill.powerId);
+          return <span key={skill.powerId} className={`skill-chip ${earned ? 'skill-chip--earned' : 'skill-chip--locked'}`}>
+            {earned ? <Check /> : <LockKeyhole />}
+            <span>{skill.label}</span>
+            {!earned && <small><Ltr>קרב {skill.battleOrder}</Ltr></small>}
+          </span>;
+        })}
+      </div>
+    </Modal>}
   </div>;
 }
 

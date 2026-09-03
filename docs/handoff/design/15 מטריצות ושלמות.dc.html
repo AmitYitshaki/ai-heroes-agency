@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Secular+One&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #ECE7DC; }
+  * { box-sizing: border-box; }
+  a { color: #1E4FD8; }
+  a:hover { color: #14171F; }
+</style>
+</helmet>
+
+<div dir="rtl" style="font-family: Assistant, system-ui, sans-serif; color: #14171F; padding: 40px 40px 120px; direction: rtl;">
+<section style="max-width: 1700px; margin: 0 auto; display: flex; flex-direction: column; gap: 36px;">
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div style="font-family: 'Secular One', sans-serif; font-size: 13px; letter-spacing: .12em; color: #6B6355;">סוכנות גיבורי ה־AI · פלטפורמה מלאה · v2</div>
+    <h1 style="font-family: 'Secular One', sans-serif; font-size: 44px; line-height: 1.1; margin: 0;">15 · מטריצות ודוח שלמות</h1>
+    <p style="font-size: 18px; line-height: 1.55; max-width: 86ch; margin: 0; color: #3A3630; text-wrap: pretty;">מיפוי 23 הקרבות לשבע התבניות, מטריצת רכיב→מצב, מלאי 52 המסכים וביקורת עצמית מול RTL, נגישות, בטיחות ומקוריות.</p>
+  </div>
+
+  <!-- ============ BATTLE → TEMPLATE ============ -->
+  <div style="background: #FFF7E9; border: 2px solid #14171F; border-radius: 20px; box-shadow: 6px 6px 0 #14171F; padding: 28px;">
+    <h2 style="font-family: 'Secular One', sans-serif; font-size: 30px; margin: 0 0 6px;">מטריצת קרב → תבנית</h2>
+    <p style="margin: 0 0 20px; font-size: 17px; line-height: 1.55; color: #3A3630; max-width: 88ch;">כל 23 הקרבות ממופים לאחת משבע התבניות שעוצבו בקובץ 12. אין קרב שדורש תבנית שלא קיימת, ואין תבנית ללא קרב.</p>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; font-size: 16px;">
+      <span style="background: #F0E9FB; border: 2px solid #6A3FA8; border-radius: 8px; padding: 5px 11px; font-weight: 700; color: #6A3FA8;">T1 הרכבת פרומפט · 3</span>
+      <span style="background: #EAEDF5; border: 2px solid #4A5B7E; border-radius: 8px; padding: 5px 11px; font-weight: 700; color: #4A5B7E;">T2 סריקת תקלה · 4</span>
+      <span style="background: #FDEBDB; border: 2px solid #B8480C; border-radius: 8px; padding: 5px 11px; font-weight: 700; color: #B8480C;">T3 בחירת כוח · 4</span>
+      <span style="background: #F0E9FB; border: 2px solid #6A3FA8; border-radius: 8px; padding: 5px 11px; font-weight: 700; color: #6A3FA8;">T4 תיקון תקלה · 2</span>
+      <span style="background: #FDEBDB; border: 2px solid #B8480C; border-radius: 8px; padding: 5px 11px; font-weight: 700; color: #B8480C;">T5 מבחן רובוט · 4</span>
+      <span style="background: #E1F2F2; border: 2px solid #0F6E6E; border-radius: 8px; padding: 5px 11px; font-weight: 700; color: #0F6E6E;">T6 מגן אחריות · 1</span>
+      <span style="background: #FFF1D2; border: 2px solid #14171F; border-radius: 8px; padding: 5px 11px; font-weight: 700;">T7 קרב שילוב · 5</span>
+    </div>
+
+    <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 16px; overflow: hidden; font-size: 16px;">
+      <div style="display: grid; grid-template-columns: 50px 1.45fr .95fr 66px 1.75fr 58px; background: #14171F; color: #FFF7E9; font-weight: 700;">
+        <div style="padding: 10px 8px;">#</div><div style="padding: 10px 12px;">קרב</div><div style="padding: 10px 12px;">אזור</div><div style="padding: 10px 8px;">תבנית</div><div style="padding: 10px 12px;">מצב ייחודי מעל הבסיס</div><div style="padding: 10px 8px;">שנ׳</div>
+      </div>
+      <sc-for list="{{ battles }}" as="b" hint-placeholder-count="23">
+        <div style="display: grid; grid-template-columns: 50px 1.45fr .95fr 66px 1.75fr 58px; border-top: 2px solid #E5DDCB;">
+          <div style="padding: 9px 8px; font: 700 15px Heebo; direction: ltr;">{{ b.n }}</div>
+          <div style="padding: 9px 12px;">{{ b.title }}</div>
+          <div style="padding: 9px 12px; color: #3A3630;">{{ b.region }}</div>
+          <div style="padding: 9px 8px; font: 700 15px Assistant;">{{ b.t }}</div>
+          <div style="padding: 9px 12px; color: #3A3630;">{{ b.state }}</div>
+          <div style="padding: 9px 8px; font: 500 15px Heebo; direction: ltr;">{{ b.sec }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="margin-top: 16px; background: #E3F5EC; border: 2px solid #0F8A5F; border-radius: 14px; padding: 14px 16px; font-size: 16px; line-height: 1.65; color: #0B5A40;">
+      <strong>תיקוף קמפיין:</strong> אין שני קרבות עוקבים עם אותו זוג תבנית+מיומנות · כל אזור נחתם בקרב שילוב (07, 13, 18, 22) · הגמר (23) לא מציג מיומנות חדשה · הבונוסים והסדנאות אינם בין 23 הקרבות.
+    </div>
+  </div>
+
+  <!-- ============ COMPONENT → STATE ============ -->
+  <div style="background: #FFF7E9; border: 2px solid #14171F; border-radius: 20px; box-shadow: 6px 6px 0 #14171F; padding: 28px;">
+    <h2 style="font-family: 'Secular One', sans-serif; font-size: 30px; margin: 0 0 6px;">מטריצת רכיב → מצב</h2>
+    <p style="margin: 0 0 20px; font-size: 17px; line-height: 1.55; color: #3A3630; max-width: 88ch;">Base44 יכול לממש מכאן בלי להמציא מצב חסר. <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">✓</span> = המצב קיים ומעוצב · <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">—</span> = לא רלוונטי לרכיב.</p>
+
+    <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 16px; overflow: hidden; font-size: 15px;">
+      <div style="display: grid; grid-template-columns: 1.5fr repeat(9, 1fr); background: #14171F; color: #FFF7E9; font-weight: 700; font-size: 14px;">
+        <div style="padding: 9px 11px;">רכיב</div>
+        <div style="padding: 9px 5px; text-align: center;">רגיל</div>
+        <div style="padding: 9px 5px; text-align: center;">hover</div>
+        <div style="padding: 9px 5px; text-align: center;">focus</div>
+        <div style="padding: 9px 5px; text-align: center;">pressed</div>
+        <div style="padding: 9px 5px; text-align: center;">נבחר</div>
+        <div style="padding: 9px 5px; text-align: center;">נעול</div>
+        <div style="padding: 9px 5px; text-align: center;">חסום</div>
+        <div style="padding: 9px 5px; text-align: center;">נשמר</div>
+        <div style="padding: 9px 5px; text-align: center;">שגיאה</div>
+      </div>
+      <sc-for list="{{ components }}" as="c" hint-placeholder-count="14">
+        <div style="display: grid; grid-template-columns: 1.5fr repeat(9, 1fr); border-top: 2px solid #E5DDCB;">
+          <div style="padding: 9px 11px; font-weight: 700;">{{ c.name }}</div>
+          <div style="padding: 9px 5px; text-align: center;">{{ c.a }}</div>
+          <div style="padding: 9px 5px; text-align: center;">{{ c.b }}</div>
+          <div style="padding: 9px 5px; text-align: center;">{{ c.c }}</div>
+          <div style="padding: 9px 5px; text-align: center;">{{ c.d }}</div>
+          <div style="padding: 9px 5px; text-align: center;">{{ c.e }}</div>
+          <div style="padding: 9px 5px; text-align: center;">{{ c.f }}</div>
+          <div style="padding: 9px 5px; text-align: center;">{{ c.g }}</div>
+          <div style="padding: 9px 5px; text-align: center;">{{ c.h }}</div>
+          <div style="padding: 9px 5px; text-align: center;">{{ c.i }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px;">
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; padding: 14px; font-size: 16px; line-height: 1.65;">
+        <strong style="display: block; margin-bottom: 6px;">מגע ומקלדת</strong>
+        כל מצב בטבלה זמין ב־Tab/Enter. <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">focus</span> נבדל מ־<span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">selected</span>: טבעת זהב־דיו מול גבול 3px + וי + תווית.
+      </div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; padding: 14px; font-size: 16px; line-height: 1.65;">
+        <strong style="display: block; margin-bottom: 6px;">קורא מסך</strong>
+        חריץ נעול חושף סיבה ומה נשמר · תיקוף מקושר לשדה · תוצאה חדשה מוכרזת פעם אחת · ניקוד, מפה וארנק חושפים ערך טקסטואלי.
+      </div>
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 14px; padding: 14px; font-size: 16px; line-height: 1.65;">
+        <strong style="display: block; margin-bottom: 6px;">מובייל / טאבלט / דסקטופ</strong>
+        אותו סדר DOM בשלושת ה־breakpoints. במובייל הרכיבים בטור אחד; מ־768 אזור העבודה והמשוב לשני טורים; מ־1280 במה 720 + מסילות.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN INVENTORY ============ -->
+  <div style="background: #FFF7E9; border: 2px solid #14171F; border-radius: 20px; box-shadow: 6px 6px 0 #14171F; padding: 28px;">
+    <h2 style="font-family: 'Secular One', sans-serif; font-size: 30px; margin: 0 0 6px;">מלאי מסכים · <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block; font-size: 26px;">52 / 52</span></h2>
+    <p style="margin: 0 0 20px; font-size: 17px; line-height: 1.55; color: #3A3630; max-width: 88ch;">כל מסך ומצב מסעיף 6 של המפרט, עם הקובץ שבו הוא מעוצב. אין שורה שמסומנת כ״placeholder״.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 10px; font-size: 16px;">
+      <sc-for list="{{ screens }}" as="s" hint-placeholder-count="52">
+        <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 12px; padding: 9px 12px; display: flex; align-items: center; gap: 9px;">
+          <span style="font: 700 14px Heebo; direction: ltr; background: #14171F; color: #FFF7E9; border-radius: 6px; padding: 2px 7px; flex: none;">{{ s.n }}</span>
+          <span style="flex: 1; line-height: 1.35;">{{ s.name }}</span>
+          <span style="font: 700 14px Heebo; direction: ltr; color: #0B5A40; flex: none;">{{ s.file }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- ============ SELF AUDIT ============ -->
+  <div style="background: #FFF7E9; border: 2px solid #14171F; border-radius: 20px; box-shadow: 6px 6px 0 #14171F; padding: 28px;">
+    <h2 style="font-family: 'Secular One', sans-serif; font-size: 30px; margin: 0 0 20px;">ביקורת עצמית</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 16px;">
+
+      <div style="background: #FFFFFF; border: 2px solid #0F8A5F; border-radius: 16px; padding: 16px;">
+        <div style="font-family: 'Secular One', sans-serif; font-size: 19px; margin-bottom: 10px; color: #0B5A40;">RTL</div>
+        <div style="font-size: 16px; line-height: 1.7; color: #3A3630;">
+          כל המסכים תוכננו RTL מהסקיצה · מספרים ומזהים ב־<span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">isolate</span> · התקדמות מימין לשמאל · חצי כוכב מהקצה הימני · חץ ״הבא״ שמאלה · צל תמיד שמאל־למטה · אין <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">left</span>/<span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">right</span> בקוד · הוראה מרובת־שורות לא ממורכזת.
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 2px solid #0F8A5F; border-radius: 16px; padding: 16px;">
+        <div style="font-family: 'Secular One', sans-serif; font-size: 19px; margin-bottom: 10px; color: #0B5A40;">נגישות</div>
+        <div style="font-size: 16px; line-height: 1.7; color: #3A3630;">
+          יעדי מגע 44 ומעלה · טקסט מ־16px · הוראות 19px · ניגודיות נמדדה לכל טוקן · טבעת פוקוס כפולה 3:1 · חמשת מצבי הצומת נבדקו בגריי־סקייל · לכל תנועה חלופה סטטית · שני מתגי שמע נפרדים · הניקוד מספרי לצד הכוכבים.
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 2px solid #0F8A5F; border-radius: 16px; padding: 16px;">
+        <div style="font-family: 'Secular One', sans-serif; font-size: 19px; margin-bottom: 10px; color: #0B5A40;">בטיחות</div>
+        <div style="font-size: 16px; line-height: 1.7; color: #3A3630;">
+          המגן חסר גוון משלו — נייר שקוע, דיו וחרדל · אין אדום למצב UI · חסימה מקומית לפני כל בקשה · הטקסט שנחסם לא מוצג ולא נשמר · שדות מידע אישי הם תוויות דמה · שתי חלופות בטוחות בכל עצירה · אין נשק, פגיעה, רדיפה, עשן או הבהוב.
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 2px solid #0F8A5F; border-radius: 16px; padding: 16px;">
+        <div style="font-family: 'Secular One', sans-serif; font-size: 19px; margin-bottom: 10px; color: #0B5A40;">מקוריות · חמש שאלות הביקורת</div>
+        <div style="font-size: 16px; line-height: 1.7; color: #3A3630;">
+          <strong>1.</strong> הסרת כל אזכור Candy Crush לא משנה דבר בעיצוב — הבסיס הוא נייר קומיקס מודפס.<br>
+          <strong>2.</strong> המפה, הצמתים והכפתורים נגזרו מארבעת האזורים הלימודיים.<br>
+          <strong>3.</strong> מה שהושאל הוא עקרון UX (מסלול קריא, מצבי צומת, משוב מיידי) ולא ביטוי מוגן.<br>
+          <strong>4.</strong> אין חיים, אנרגיה, קנייה, פרסומת, ספירה לאחור, רצף, תיבת מזל או לוח תוצאות.<br>
+          <strong>5.</strong> השפה החזותית היא סוכנות טכנולוגית — לא ממתקים, לא ג׳ל ולא זוהר.
+        </div>
+      </div>
+
+      <div style="background: #FFF0D6; border: 2px solid #A85C00; border-radius: 16px; padding: 16px;">
+        <div style="font-family: 'Secular One', sans-serif; font-size: 19px; margin-bottom: 10px; color: #6B3B00;">הנחות שנרשמו</div>
+        <div style="font-size: 16px; line-height: 1.7; color: #6B3B00;">
+          <strong>1.</strong> גוני האזורים (<span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">#4A5B7E / #B8480C / #6A3FA8 / #0F6E6E</span>) נגזרו על־ידי העיצוב; המקור לא נעל פלטה.<br>
+          <strong>2.</strong> ״גודל טקסט״ בהגדרות הוא תוספת עיצובית מעל <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">A11Y-RES-04</span>. לא משנה ניקוד או תוכן.<br>
+          <strong>3.</strong> שמות פריטי הקוסמטיקה במסכים הם ממלאי מקום; המחירים <span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">5/8/12</span> ו־<span style="font-family: Heebo, monospace; direction: ltr; display: inline-block;">4/8/12</span> נעולים מהסכמה.<br>
+          <strong>4.</strong> שלוש קטגוריות הבונוס הן חלוקה עיצובית של המאגר הקיים; המפרט מתיר 3–4.
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 2px solid #14171F; border-radius: 16px; padding: 16px;">
+        <div style="font-family: 'Secular One', sans-serif; font-size: 19px; margin-bottom: 10px;">מה נשאר לפני Release Gate</div>
+        <div style="font-size: 16px; line-height: 1.7; color: #3A3630;">
+          <strong>1.</strong> הפקת נכסי הדמויות — כל הריבועים המקווקווים בעיצוב הם חריצים ממתינים, לא איורים סופיים.<br>
+          <strong>2.</strong> ספריית דיאלוג סופית לכל נבל (מסומן Pending ב־Content Bible).<br>
+          <strong>3.</strong> רשימת שמע ורישוי סופית.<br>
+          <strong>4.</strong> אימות ניגודיות במכשיר אמיתי אחרי הזרקת הנכסים.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1700,&quot;height&quot;:1100}}">
+class Component extends DCLogic {
+  renderVals() {
+    const B = [
+      ["01","קריאת כיוון","גיוס","T1","מדריך צמוד, קומיקס גיוס",90],
+      ["02","למי זה מיועד?","ערפל","T2","שלוש ערכות ציוד סטטיות",90],
+      ["03","היכן אנחנו?","ערפל","T3","אבחון + בחירה + בדיקה סיבתית",90],
+      ["04","לא בערך, בדיוק","ערפל","T4","בלוקי תיקון ניסוח",90],
+      ["05","שפה אחת","ערפל","T3","שלוש גרסאות תפריט",90],
+      ["06","השוואת צורות","ערפל","T5","פסקה מול טבלה + סמן חיפוש",90],
+      ["07","שילוב עוטף","ערפל","T7","שלושה חריצים, שיגור אחד",135],
+      ["08","כמה זה מספיק","מפעל","T3","סרט־נע עם נקודת עצירה",90],
+      ["09","נימוסים במפעל","מפעל","T2","שלושה שלטים בטון שונה",90],
+      ["10","הראו לי איך","מפעל","T3","צירוף דוגמה מאושרת",90],
+      ["11","רק לא זה","מפעל","T1","כרטיס דוגמה שלילית",90],
+      ["12","מבחן איכות","מפעל","T5","קריטריון גלוי + שתי סוללות",90],
+      ["13","פס הייצור","מפעל","T7","אילוץ + דוגמה + קריטריון",135],
+      ["14","לפי הסדר","מבוך","T1","חריצי סדר + פקדי העלאה/הורדה",105],
+      ["15","הפרדת כוחות","מבוך","T2","מפריד הוראה מול נתון",105],
+      ["16","סתירה פנימית","מבוך","T4","פתק חתוך + כלל חיובי",105],
+      ["17","צעד אחר צעד","מבוך","T5","השוואת שתי גרסאות בשם",105],
+      ["18","יציאה מהמבוך","מבוך","T7","מגשים + חריץ נשמר",135],
+      ["19","אותו הדבר בדיוק?","מגדל","T5","שתי תוצאות לאותו פרומפט",90],
+      ["20","מי אמר?","מגדל","T6","מקור מועמד מול מאושר",105],
+      ["21","סודות רשת","מגדל","T2","מגן פרטיות + שדות דמה",105],
+      ["22","שומר הסף","מגדל","T7","אימות + פרטיות + הסתברות",135],
+      ["23","שחזור התכנית","גמר","T7","כתיבה חופשית + 7 משפחות + בנה מודרך",165]
+    ];
+    const C = [
+      ["כפתור ראשי","✓","✓","✓","✓","—","—","—","—","—"],
+      ["כפתור משני","✓","✓","✓","✓","—","—","—","—","—"],
+      ["כרטיס כוח","✓","✓","✓","✓","✓","✓","—","✓","✓"],
+      ["חריץ פרומפט","✓","—","✓","—","✓","✓","—","✓","✓"],
+      ["צ׳יפ מיומנות","✓","—","✓","—","✓","✓","—","—","—"],
+      ["צומת מפה","✓","✓","✓","✓","✓","✓","—","—","—"],
+      ["שדה טקסט 600","✓","—","✓","—","—","—","✓","—","✓"],
+      ["מונה תווים","✓","—","—","—","—","—","✓","—","✓"],
+      ["שורת כוכבים","✓","—","—","—","—","—","—","—","—"],
+      ["ארנק","✓","—","✓","—","—","—","✓","—","—"],
+      ["פריט קוסמטיקה","✓","✓","✓","✓","✓","—","✓","✓","—"],
+      ["דיאלוג","✓","—","✓","—","—","—","—","—","—"],
+      ["גיליון עזרה","✓","—","✓","—","✓","—","—","✓","—"],
+      ["מגן בטיחות","✓","—","✓","—","—","—","✓","—","—"]
+    ];
+    const S = [
+      "טעינה / splash|11","כניסה ראשונה · התחילו מסע|11","כניסה חוזרת · המשך / מסע חדש|11","דיאלוג אישור מסע חדש|11",
+      "בחירת גיבור / גיבורה|11","קומיקס גיוס והצגת לופּ-X|11","בחירת צליל שאינה חוסמת|11","מפת קמפיין · כל האזורים|11",
+      "צומת נעול|11","צומת המשימה הבאה|11","צומת הושלם עם שיא|11","צומת שיחזור|11",
+      "מעבר אזור · פתיחה וסיום|11+13","החלפת דמות מהמפה|11","הגדרות ונגישות|11","התקדמות, ארנק וכוחות|11",
+      "פאנל נבל / קומיקס פתיחה|12","מטרת המשימה|12","סריקת תקלה|12","אזור בניית הפרומפט|12",
+      "שיגור|12","תוצאת עולם 2–4 שנ׳|12","משוב תמציתי|12","ניסיון חוזר עם שמירת נכונים|12",
+      "סולם עזרה 1–6|12","השלמה מודרכת|12","ניצחון וניקוד 1–5 בחצאים|12","שיחזור · דלתא בלבד|12",
+      "תקלה טכנית / לא מקוון|12","עצירת בטיחות מוגנת|12","ארבעה ביקורי סדנה|13","שלוש בחירות קוסמטיקה|13",
+      "בבעלות / מורכב / ניתן / חסר יתרה|13","אישור רכישה + רכישה שהושלמה|13","דילוג על סדנה|13","שלוש הצעות בונוס|13",
+      "גלגל קטגוריות · פרס קבוע|13","בונוס: הצלחה / כבר נלקח / דילוג|13","פתיחה וסיום לארבעת האזורים|13","תגובת נבל ויציאה בטוחה|13",
+      "ניתוב סדנה→בונוס→מפה (1–3)|13","ניתוב סדנה→גמר (אזור 4)|13","שדה חופשי + מונה 600|14","מדריך מאושר + שני פיתויים|14",
+      "חסימה מקומית לפני בקשה|14","שבע משפחות התוצאה|14","timeout · טקסט נשאר במסך|14","בנה חצי־פתוח מודרך|14",
+      "ניצחון בגמר|14","טקס ההסמכה|14","תעודה גנרית בלי שם|14","סיכום מסע + שיחזור / מפה|14"
+    ];
+    return {
+      battles: B.map(r => ({ n: r[0], title: r[1], region: r[2], t: r[3], state: r[4], sec: r[5] })),
+      components: C.map(r => ({ name: r[0], a: r[1], b: r[2], c: r[3], d: r[4], e: r[5], f: r[6], g: r[7], h: r[8], i: r[9] })),
+      screens: S.map((s, i) => {
+        const p = s.split("|");
+        return { n: String(i + 1).padStart(2, "0"), name: p[0], file: p[1] };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>
